@@ -1,7 +1,7 @@
 import { Box, HTMLChakraProps, Heading, useToast, Center } from '@chakra-ui/react';
-import Link from 'next/link'
 
 import { ReactNode, useEffect } from 'react';
+import { TextLink } from '../TextLink';
 import { AuthType } from './@enums/AuthType';
 
 
@@ -49,9 +49,9 @@ export const AuthContainer = ({ children, authType, errorMessage, ...restProps }
       <Box maxWidth="lg" minWidth="sm" p="8" borderRadius="lg" backgroundColor="gray.700" {...restProps}>
         <Heading as="h3" size="md" mb="4">{strings.title}</Heading>
         <Box mb="6">
-          {strings.wrongPlaceQuestion} <Link href={strings.wrongPlaceLinkPath}>
+          {strings.wrongPlaceQuestion} <TextLink href={strings.wrongPlaceLinkPath}>
             {strings.wrongPlaceLinkLabel}
-          </Link>
+          </TextLink>
         </Box>
         {children}
       </Box>

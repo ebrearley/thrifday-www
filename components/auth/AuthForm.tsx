@@ -9,11 +9,9 @@ import { AuthFields } from './AuthFields';
 import { useLogin } from '../../hooks/useLogin';
 import { useRegister } from '../../hooks/useRegister';
 import { useToast } from '@chakra-ui/react';
+import { AuthFormValuesOrErrors } from './@types/AuthFormValuesOrErrors';
+import { validateForm } from './utils/validateForm';
 
-interface AuthFormErrors {
-  email?: string;
-  password?: string;
-}
 
 interface AuthFormProps {
   authType: AuthType;
@@ -46,7 +44,7 @@ export const AuthForm = (props: AuthFormProps) => {
 
   const auth = authDictionary[authType];
 
-  const onSubmit = (values, { setSubmitting }) => {
+  const onSubmit = (values: AuthFormValuesOrErrors, { setSubmitting }) => {
     auth.mutation({
       email: values.email,
       password: values.password,
@@ -59,6 +57,7 @@ export const AuthForm = (props: AuthFormProps) => {
         toast({
           isClosable: true,
           status: 'success',
+          duration: 1000,
           title: auth.successToastText,
         })
         router.push('/');
@@ -70,21 +69,7 @@ export const AuthForm = (props: AuthFormProps) => {
     <AuthContainer authType={authType} errorMessage={auth.error?.message}>
       <Formik
         initialValues={{ email: '', password: '' }}
-        validate={values => {
-          const errors: AuthFormErrors = {};
-          if (!values.email) {
-            errors.email = 'Email required';
-          } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-          ) {
-            errors.email = 'Invalid email address';
-          }
-
-          if (!values.password) {
-            errors.password = 'Password required';
-          }
-          return errors;
-        }}
+        validate={validateForm}
         onSubmit={onSubmit}
       >
         {({ isSubmitting }) => (
