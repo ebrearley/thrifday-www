@@ -1,12 +1,13 @@
-import { FetchResult, MutationHookOptions, MutationResult } from '@apollo/react-hooks';
+import { FetchResult, makeReference, MutationHookOptions, MutationResult } from '@apollo/react-hooks';
 import { noop } from 'lodash';
 
 import {
   RegisterMutation,
   RegisterMutationVariables,
   AuthRegisterInput,
-  // RegisterMutationResult,
   useRegisterMutation,
+  CurrentUserDocument,
+  RegisterMutationResult,
 } from '../../@types/generated';
 
 
@@ -36,16 +37,32 @@ export const useRegister = (props: LoginMutationProps = { errorPolicy: 'all' }):
   const [onRegister, registerProps] = useRegisterMutation(propsWithCompleted);
   try {
     const register = (input: AuthRegisterInput) => {
-      return onRegister({
-        variables: {
-          input,
-        }
-        // refetchQueries: (mutationResult: RegisterMutationResult) => {
-        //   return [
-        //     { query: CurrentUserDocument, fetchPolicy: 'cache-and-network' },
-        //     { query: GetCartDocument, variables: { input: { cartId } } },
-        //   ];
-        // },
+      return new Promise(resolve => {
+        onRegister({
+          variables: {
+            input,
+          },
+        }).then(async (mutationResult) => {
+          const token = mutationResult?.data?.register?.token;
+          if (token) {
+            sessionStorage.setItem('jwtToken', token);
+          }
+
+          const user = mutationResult?.data?.register?.user;
+          if (user) {
+            const { cache } = registerProps.client;
+            cache.modify({
+              id: cache.identify(makeReference('ROOT_QUERY')),
+              fields: {
+                currentUser() {
+                  return user;
+                },
+              },
+            });
+          }
+
+          resolve(mutationResult);
+        });;
       });
     };
 
@@ -55,7 +72,7 @@ export const useRegister = (props: LoginMutationProps = { errorPolicy: 'all' }):
     ];
   } catch (error) {
     return [
-      noop,
+      noop as any,
       registerProps,
     ];
   }

@@ -6,12 +6,8 @@ import {
   LoginMutation,
   LoginMutationVariables,
   AuthLoginInput,
-  LoginMutationResult,
   useLoginMutation,
-  CurrentUserDocument,
-  CurrentUserQueryResult,
 } from '../../@types/generated';
-import { initializeApollo } from '../../lib/apolloClient';
 
 
 type LoginMutationProps = MutationHookOptions<LoginMutation, LoginMutationVariables>;
@@ -59,7 +55,7 @@ export const useLogin = (props: LoginMutationProps = { errorPolicy: 'all' }): Lo
     ];
   } catch (error) {
     return [
-      noop,
+      noop as any,
       loginProps,
     ];
   }
