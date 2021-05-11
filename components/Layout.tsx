@@ -21,7 +21,7 @@ export const Layout = ({ children }: LayoutProps) => {
       
         <Flex>
           <Sidebar />
-            <Box flexGrow={1}>
+            <Box flexGrow={1} backgroundColor="gray.900">
               <main>
                 {children}
               </main>
