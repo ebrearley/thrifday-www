@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import styled from 'styled-components';
 import useRegister from '../hooks/useRegister';
 import { useRouter } from 'next/router';
 
@@ -8,16 +7,6 @@ interface SignupFormErrors {
   email?: string;
   password?: string;
 }
-
-const StyledForm = styled(Form)`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  & input {
-    margin-bottom: 1rem;
-  }
-`;
 
 const SignupForm = () => {
   const [register, { loading, error }] = useRegister();
@@ -41,8 +30,7 @@ const SignupForm = () => {
   }
 
   return (
-  <div>
-    <h1>Sign up</h1>
+  <>
     {errorMessage}
     <Formik
       initialValues={{ email: '', password: '' }}
@@ -64,7 +52,7 @@ const SignupForm = () => {
       onSubmit={onSubmit}
     >
       {({ isSubmitting }) => (
-        <StyledForm>
+        <Form>
           <ErrorMessage name="email" component="div" />
           <Field type="email" name="email" placeholder="Email" />
           <ErrorMessage name="password" component="div" />
@@ -72,10 +60,10 @@ const SignupForm = () => {
           <button type="submit" disabled={isSubmitting}>
             Submit
           </button>
-        </StyledForm>
+        </Form>
       )}
     </Formik>
-  </div>
+  </>
 )};
 
 export default SignupForm;

@@ -1,13 +1,17 @@
 import { FetchResult, MutationHookOptions, MutationResult } from '@apollo/react-hooks';
+import { makeReference } from '@apollo/client';
 import { noop } from 'lodash';
 
 import {
   LoginMutation,
   LoginMutationVariables,
   AuthLoginInput,
-  // LoginMutationResult,
+  LoginMutationResult,
   useLoginMutation,
+  CurrentUserDocument,
+  CurrentUserQueryResult,
 } from '../../@types/generated';
+import { initializeApollo } from '../../lib/apolloClient';
 
 
 type LoginMutationProps = MutationHookOptions<LoginMutation, LoginMutationVariables>;
@@ -17,47 +21,46 @@ type LoginMutationReturnProps = [
 ]
 
 export const useLogin = (props: LoginMutationProps = { errorPolicy: 'all' }): LoginMutationReturnProps => {
-  const onCompleted = (data: LoginMutation) => {
-    const token = data?.login?.token;
-    console.log(data);
-    if (token) {
-      sessionStorage.setItem('jwtToken', token);
-    }
-
-    if (props.onCompleted) {
-      props.onCompleted(data);
-    }
-  }
-
-  const propsWithCompleted = {
-    ...props,
-    onCompleted,
-  }
-
-  const [onLogin, registerProps] = useLoginMutation(propsWithCompleted);
+  const [onLogin, loginProps] = useLoginMutation(props);
   try {
-    const register = (input: AuthLoginInput) => {
-      return onLogin({
-        variables: {
-          input,
-        }
-        // refetchQueries: (mutationResult: LoginMutationResult) => {
-        //   return [
-        //     { query: CurrentUserDocument, fetchPolicy: 'cache-and-network' },
-        //     { query: GetCartDocument, variables: { input: { cartId } } },
-        //   ];
-        // },
+    const login = (input: AuthLoginInput) => {
+      return new Promise(resolve => {
+        onLogin({
+          variables: {
+            input,
+          },
+        }).then(async (mutationResult) => {
+          const token = mutationResult?.data?.login?.token;
+          if (token) {
+            sessionStorage.setItem('jwtToken', token);
+          }
+
+          const user = mutationResult?.data?.login?.user;
+          if (user) {
+            const { cache } = loginProps.client;
+            cache.modify({
+              id: cache.identify(makeReference('ROOT_QUERY')),
+              fields: {
+                currentUser() {
+                  return user;
+                },
+              },
+            });
+          }
+
+          resolve(mutationResult);
+        });
       });
     };
 
     return [
-      register,
-      registerProps,
+      login,
+      loginProps,
     ];
   } catch (error) {
     return [
       noop,
-      registerProps,
+      loginProps,
     ];
   }
 };

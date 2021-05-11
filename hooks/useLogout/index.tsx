@@ -1,15 +1,29 @@
-import { CurrentUserQuery, useCurrentUserQuery } from '../../@types/generated';
-import { useRouter } from 'next/router'
+import { makeReference } from '@apollo/client';
+import useCurrentUser from '../useCurrentUser';
 
-const useLogout = () => {
-  const { client } = useCurrentUserQuery({ errorPolicy: 'all' });
-  const router = useRouter();
+interface UseLogoutProps {
+  isReady: boolean;
+}
+
+const useLogout = (props: UseLogoutProps = { isReady: true }) => {
+  const { user, queryProps } = useCurrentUser({ queryArgs: { skip: !props.isReady }});
+  const cache = queryProps?.client?.cache;
 
   const logout = (): Promise<void> => {
     return new Promise((resolve) => {
-      client.resetStore();
-      router.push('/');
+      const userId = user?.id;
+      console.log('userId', user);
       sessionStorage.removeItem('jwtToken');
+
+      if (userId) {
+        cache.modify({
+          id: cache.identify(makeReference('ROOT_QUERY')),
+          fields(fieldValue, details) {
+            return details.DELETE;
+          },
+        });
+        cache.gc();
+      }
 
       resolve();
     });

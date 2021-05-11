@@ -1,8 +1,20 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import useCurrentUser from '../hooks/useCurrentUser'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
+  const { user, isLoading } = useCurrentUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user && !isLoading) {
+      router.push('/login');
+    }
+  }, [isLoading, user]);
+
   return (
     <div className={styles.container}>
       <Head>

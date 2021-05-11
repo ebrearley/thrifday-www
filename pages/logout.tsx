@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useCurrentUser from '../hooks/useCurrentUser';
 import useLogout from '../hooks/useLogout';
 
@@ -7,11 +7,20 @@ import useLogout from '../hooks/useLogout';
 export default function Logout() {
   const { user } = useCurrentUser();
   const router = useRouter();
-  const logout = useLogout();
+  const [isReadyToLogout, setIsreadyToLogout] = useState(false) ;
+  const logout = useLogout({ isReady: isReadyToLogout });
 
   useEffect(() => {
-    logout();
-  }, []);
+    if (user) {
+      setIsreadyToLogout(true);
+    }
+
+    if (user && isReadyToLogout) {
+      logout().then(() => {
+        router.push('/login');
+      });
+    }
+  }, [user, isReadyToLogout]);
 
   return <div>Logging out</div>
 }
