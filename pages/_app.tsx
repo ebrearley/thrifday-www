@@ -1,8 +1,11 @@
-import { AppProps } from 'next/app'
 import { ApolloProvider } from '@apollo/client'
+import { AppProps } from 'next/app'
 import { ChakraProvider } from "@chakra-ui/react"
-import { useApollo } from '../lib/apolloClient'
+import React from 'react';
+
 import '../styles/globals.css';
+import { Layout } from '../components/Layout';
+import { useApollo } from '../lib/apolloClient'
 
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -11,9 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={apolloClient}>
       <ChakraProvider resetCSS={true}>
-        <main>
-          <Component {...pageProps} />
-        </main>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
       </ChakraProvider>
     </ApolloProvider>
   )

@@ -28,5 +28,3 @@ export const useCurrentUser = (props: UseCurrentUserProps = { queryArgs: { error
     };
   }
 };
-
-export default useCurrentUser;

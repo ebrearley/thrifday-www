@@ -5,14 +5,13 @@ import { ReactNode, useEffect } from 'react';
 import { AuthType } from './@enums/AuthType';
 
 
-interface WrapperProps extends HTMLChakraProps<'div'> {
+interface AuthContainerProps extends HTMLChakraProps<'div'> {
   children: ReactNode;
   authType: AuthType;
   errorMessage?: string;
 }
 
-export default function AuthContainer(props: WrapperProps) {
-  const { children, authType, errorMessage, ...restProps } = props;
+export const AuthContainer = ({ children, authType, errorMessage, ...restProps }: AuthContainerProps) => {
   const toast = useToast();
 
   const stringsDictionary = {

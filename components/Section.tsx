@@ -5,12 +5,8 @@ interface SectionProps extends HTMLChakraProps<'section'> {
   children: ReactNode;
 }
 
-export default function Section(props: SectionProps) {
-  const { children, ...restProps } = props;
-
-  return (
-    <Box as="section" pt={24} pb={24} {...restProps}>
-      {children}
-    </Box>
-  );
-}
+export const Section = ({ children, ...restProps }: SectionProps) => (
+  <Box as="section" pt={24} pb={24} {...restProps}>
+    {children}
+  </Box>
+);

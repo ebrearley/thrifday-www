@@ -4,10 +4,10 @@ import React from 'react';
 
 import { AuthType } from './@enums/AuthType';
 import { useRouter } from 'next/router';
-import AuthContainer from './AuthContainer';
-import AuthFields from './AuthFields';
-import useLogin from '../../hooks/useLogin';
-import useRegister from '../../hooks/useRegister';
+import { AuthContainer } from './AuthContainer';
+import { AuthFields } from './AuthFields';
+import { useLogin } from '../../hooks/useLogin';
+import { useRegister } from '../../hooks/useRegister';
 
 interface AuthFormErrors {
   email?: string;
@@ -18,7 +18,7 @@ interface AuthFormProps {
   authType: AuthType;
 }
 
-const AuthForm = (props: AuthFormProps) => {
+export const AuthForm = (props: AuthFormProps) => {
   const [login, { error: loginError }] = useLogin();
   const [register, { error: registerError }] = useRegister();
   const { authType } = props;
@@ -88,4 +88,3 @@ const AuthForm = (props: AuthFormProps) => {
   );
 };
 
-export default AuthForm;

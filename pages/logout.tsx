@@ -1,7 +1,8 @@
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import useCurrentUser from '../hooks/useCurrentUser';
-import useLogout from '../hooks/useLogout';
+import { useRouter } from 'next/router';
+
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import { useLogout } from '../hooks/useLogout';
 
 
 export default function Logout() {

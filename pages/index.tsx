@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head'
 import Image from 'next/image'
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import useCurrentUser from '../hooks/useCurrentUser'
+
+import { useCurrentUser } from '../hooks/useCurrentUser'
 import styles from '../styles/Home.module.css'
+
 
 export default function Home() {
   const { user, isLoading } = useCurrentUser();

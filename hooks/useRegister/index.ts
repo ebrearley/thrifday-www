@@ -53,5 +53,3 @@ export const useRegister = (props: LoginMutationProps = { errorPolicy: 'all' }):
     ];
   }
 };
-
-export default useRegister;

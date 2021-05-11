@@ -1,14 +1,13 @@
 import { FetchResult, MutationHookOptions, MutationResult } from '@apollo/react-hooks';
-import { makeReference } from '@apollo/client';
 import { noop } from 'lodash';
 
+import { addUserToApolloCache } from '../../utils/addUserToApolloCache';
 import {
+  AuthLoginInput,
   LoginMutation,
   LoginMutationVariables,
-  AuthLoginInput,
   useLoginMutation,
 } from '../../@types/generated';
-import { addUserToApolloCache } from '../../utils/addUserToApolloCache';
 
 
 type LoginMutationProps = MutationHookOptions<LoginMutation, LoginMutationVariables>;
@@ -28,11 +27,12 @@ export const useLogin = (props: LoginMutationProps = { errorPolicy: 'all' }): Lo
           },
         }).then(async (mutationResult) => {
           const token = mutationResult?.data?.login?.token;
+          const user = mutationResult?.data?.login?.user;
+
           if (token) {
             sessionStorage.setItem('jwtToken', token);
           }
 
-          const user = mutationResult?.data?.login?.user;
           if (user) {
             addUserToApolloCache({ user, client: loginProps.client })
           }
@@ -53,5 +53,3 @@ export const useLogin = (props: LoginMutationProps = { errorPolicy: 'all' }): Lo
     ];
   }
 };
-
-export default useLogin;

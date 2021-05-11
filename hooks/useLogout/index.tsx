@@ -1,11 +1,12 @@
 import { makeReference } from '@apollo/client';
-import useCurrentUser from '../useCurrentUser';
+
+import { useCurrentUser } from '../useCurrentUser';
 
 interface UseLogoutProps {
   isReady: boolean;
 }
 
-const useLogout = (props: UseLogoutProps = { isReady: true }) => {
+export const useLogout = (props: UseLogoutProps = { isReady: true }) => {
   const { user, queryProps } = useCurrentUser({ queryArgs: { skip: !props.isReady }});
   const cache = queryProps?.client?.cache;
 
@@ -32,4 +33,3 @@ const useLogout = (props: UseLogoutProps = { isReady: true }) => {
   return logout;
 };
 
-export default useLogout;
