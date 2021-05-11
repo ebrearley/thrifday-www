@@ -8,6 +8,7 @@ import { AuthContainer } from './AuthContainer';
 import { AuthFields } from './AuthFields';
 import { useLogin } from '../../hooks/useLogin';
 import { useRegister } from '../../hooks/useRegister';
+import { useToast } from '@chakra-ui/react';
 
 interface AuthFormErrors {
   email?: string;
@@ -24,6 +25,7 @@ export const AuthForm = (props: AuthFormProps) => {
   const { authType } = props;
 
   const router = useRouter();
+  const toast = useToast();
 
   const authDictionary = {
     [AuthType.Login]: {
@@ -31,12 +33,14 @@ export const AuthForm = (props: AuthFormProps) => {
       error: loginError,
       userIdPath: 'data.login.user.id',
       submitLable: 'Log in',
+      successToastText: 'Logged in!',
     },
     [AuthType.Signup]: {
       mutation: register,
       error: registerError,
       userIdPath: 'data.register.user.id',
       submitLable: 'Sign up',
+      successToastText: 'Account registered and now logged in!',
     },
   };
 
@@ -52,6 +56,11 @@ export const AuthForm = (props: AuthFormProps) => {
 
       const userId = get(mutationArgs, auth.userIdPath);
       if (userId) {
+        toast({
+          isClosable: true,
+          status: 'success',
+          title: auth.successToastText,
+        })
         router.push('/');
       }
     });
