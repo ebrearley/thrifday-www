@@ -47,6 +47,7 @@ export type MonitoredProduct = {
 
 export type Mutation = {
   addMonitoredProduct?: Maybe<MonitoredProduct>;
+  removeMonitoredProduct?: Maybe<MonitoredProduct>;
   addProductPageToMonitoredProduct?: Maybe<MonitoredProduct>;
   removeProductPageFromMonitoredProduct?: Maybe<MonitoredProduct>;
   register: TokenUser;
@@ -56,6 +57,11 @@ export type Mutation = {
 
 export type MutationAddMonitoredProductArgs = {
   input: CreateMonitoredProductInput;
+};
+
+
+export type MutationRemoveMonitoredProductArgs = {
+  input: RemoveMonitoredProductInput;
 };
 
 
@@ -105,6 +111,10 @@ export type QueryRetailerProductArgs = {
   input: ProductPageInput;
 };
 
+export type RemoveMonitoredProductInput = {
+  monitoredProductId: Scalars['ID'];
+};
+
 export type RemoveProductPagesFromMonitoredProductInput = {
   monitoredProductId: Scalars['ID'];
   productPageIds: Array<Scalars['ID']>;
@@ -143,9 +153,10 @@ export type TokenUser = {
 export type User = {
   id: Scalars['ID'];
   email: Scalars['String'];
-  temp?: Maybe<RetailerEnum>;
   monitoredProducts?: Maybe<Array<MonitoredProduct>>;
 };
+
+export type BasicUserDetailsFragment = Pick<User, 'id' | 'email'>;
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -159,7 +170,7 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { login: (
     Pick<TokenUser, 'token'>
-    & { user: Pick<User, 'id' | 'email'> }
+    & { user: BasicUserDetailsFragment }
   ) };
 
 export type RegisterMutationVariables = Exact<{
@@ -169,10 +180,15 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { register: (
     Pick<TokenUser, 'token'>
-    & { user: Pick<User, 'id' | 'email'> }
+    & { user: BasicUserDetailsFragment }
   ) };
 
-
+export const BasicUserDetailsFragmentDoc = gql`
+    fragment BasicUserDetails on User {
+  id
+  email
+}
+    `;
 export const CurrentUserDocument = gql`
     query CurrentUser {
   currentUser {
@@ -216,12 +232,11 @@ export const LoginDocument = gql`
   login(input: $input) {
     token
     user {
-      id
-      email
+      ...BasicUserDetails
     }
   }
 }
-    `;
+    ${BasicUserDetailsFragmentDoc}`;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
@@ -253,12 +268,11 @@ export const RegisterDocument = gql`
   register(input: $input) {
     token
     user {
-      id
-      email
+      ...BasicUserDetails
     }
   }
 }
-    `;
+    ${BasicUserDetailsFragmentDoc}`;
 export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
 
 /**
@@ -377,6 +391,7 @@ export type ResolversTypes = ResolversObject<{
   ProductPrice: ResolverTypeWrapper<ProductPrice>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Query: ResolverTypeWrapper<{}>;
+  RemoveMonitoredProductInput: RemoveMonitoredProductInput;
   RemoveProductPagesFromMonitoredProductInput: RemoveProductPagesFromMonitoredProductInput;
   RetailerEnum: RetailerEnum;
   RetailerProduct: ResolverTypeWrapper<RetailerProduct>;
@@ -401,6 +416,7 @@ export type ResolversParentTypes = ResolversObject<{
   ProductPrice: ProductPrice;
   Float: Scalars['Float'];
   Query: {};
+  RemoveMonitoredProductInput: RemoveMonitoredProductInput;
   RemoveProductPagesFromMonitoredProductInput: RemoveProductPagesFromMonitoredProductInput;
   RetailerProduct: RetailerProduct;
   Boolean: Scalars['Boolean'];
@@ -422,6 +438,7 @@ export type MonitoredProductResolvers<ContextType = any, ParentType extends Reso
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   addMonitoredProduct?: Resolver<Maybe<ResolversTypes['MonitoredProduct']>, ParentType, ContextType, RequireFields<MutationAddMonitoredProductArgs, 'input'>>;
+  removeMonitoredProduct?: Resolver<Maybe<ResolversTypes['MonitoredProduct']>, ParentType, ContextType, RequireFields<MutationRemoveMonitoredProductArgs, 'input'>>;
   addProductPageToMonitoredProduct?: Resolver<Maybe<ResolversTypes['MonitoredProduct']>, ParentType, ContextType, RequireFields<MutationAddProductPageToMonitoredProductArgs, 'input'>>;
   removeProductPageFromMonitoredProduct?: Resolver<Maybe<ResolversTypes['MonitoredProduct']>, ParentType, ContextType, RequireFields<MutationRemoveProductPageFromMonitoredProductArgs, 'input'>>;
   register?: Resolver<ResolversTypes['TokenUser'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'input'>>;
@@ -464,7 +481,6 @@ export type TokenUserResolvers<ContextType = any, ParentType extends ResolversPa
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  temp?: Resolver<Maybe<ResolversTypes['RetailerEnum']>, ParentType, ContextType>;
   monitoredProducts?: Resolver<Maybe<Array<ResolversTypes['MonitoredProduct']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

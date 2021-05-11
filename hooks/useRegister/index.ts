@@ -1,4 +1,4 @@
-import { FetchResult, makeReference, MutationHookOptions, MutationResult } from '@apollo/react-hooks';
+import { FetchResult, MutationHookOptions, MutationResult } from '@apollo/react-hooks';
 import { noop } from 'lodash';
 
 import {
@@ -6,9 +6,8 @@ import {
   RegisterMutationVariables,
   AuthRegisterInput,
   useRegisterMutation,
-  CurrentUserDocument,
-  RegisterMutationResult,
 } from '../../@types/generated';
+import { addUserToApolloCache } from '../../utils/addUserToApolloCache';
 
 
 type LoginMutationProps = MutationHookOptions<RegisterMutation, RegisterMutationVariables>;
@@ -18,23 +17,7 @@ type LoginMutationReturnProps = [
 ]
 
 export const useRegister = (props: LoginMutationProps = { errorPolicy: 'all' }): LoginMutationReturnProps => {
-  const onCompleted = (data: RegisterMutation) => {
-    const token = data?.register?.token;
-    if (token) {
-      sessionStorage.setItem('jwtToken', token);
-    }
-
-    if (props.onCompleted) {
-      props.onCompleted(data);
-    }
-  }
-
-  const propsWithCompleted = {
-    ...props,
-    onCompleted,
-  }
-
-  const [onRegister, registerProps] = useRegisterMutation(propsWithCompleted);
+  const [onRegister, registerProps] = useRegisterMutation(props);
   try {
     const register = (input: AuthRegisterInput) => {
       return new Promise(resolve => {
@@ -44,21 +27,14 @@ export const useRegister = (props: LoginMutationProps = { errorPolicy: 'all' }):
           },
         }).then(async (mutationResult) => {
           const token = mutationResult?.data?.register?.token;
+          const user = mutationResult?.data?.register?.user;
+
           if (token) {
             sessionStorage.setItem('jwtToken', token);
           }
 
-          const user = mutationResult?.data?.register?.user;
           if (user) {
-            const { cache } = registerProps.client;
-            cache.modify({
-              id: cache.identify(makeReference('ROOT_QUERY')),
-              fields: {
-                currentUser() {
-                  return user;
-                },
-              },
-            });
+            addUserToApolloCache({ user, client: registerProps.client })
           }
 
           resolve(mutationResult);

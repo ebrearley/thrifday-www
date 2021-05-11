@@ -8,6 +8,7 @@ import {
   AuthLoginInput,
   useLoginMutation,
 } from '../../@types/generated';
+import { addUserToApolloCache } from '../../utils/addUserToApolloCache';
 
 
 type LoginMutationProps = MutationHookOptions<LoginMutation, LoginMutationVariables>;
@@ -33,15 +34,7 @@ export const useLogin = (props: LoginMutationProps = { errorPolicy: 'all' }): Lo
 
           const user = mutationResult?.data?.login?.user;
           if (user) {
-            const { cache } = loginProps.client;
-            cache.modify({
-              id: cache.identify(makeReference('ROOT_QUERY')),
-              fields: {
-                currentUser() {
-                  return user;
-                },
-              },
-            });
+            addUserToApolloCache({ user, client: loginProps.client })
           }
 
           resolve(mutationResult);
