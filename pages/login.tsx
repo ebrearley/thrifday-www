@@ -20,6 +20,9 @@ export default function Login() {
   }
 
   return (
-    <LoginForm />
+    <>
+      <h1>Login</h1>
+      <LoginForm />
+    </>
   )
 };

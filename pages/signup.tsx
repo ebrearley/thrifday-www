@@ -20,6 +20,9 @@ export default function Signup() {
   }
 
   return (
-    <SignupForm />
+    <>
+      <h1>Sign up</h1>
+      <SignupForm />
+    </>
   )
 }

@@ -19,7 +19,6 @@ type LoginMutationReturnProps = [
 export const useRegister = (props: LoginMutationProps = { errorPolicy: 'all' }): LoginMutationReturnProps => {
   const onCompleted = (data: RegisterMutation) => {
     const token = data?.register?.token;
-    console.log(data);
     if (token) {
       sessionStorage.setItem('jwtToken', token);
     }
