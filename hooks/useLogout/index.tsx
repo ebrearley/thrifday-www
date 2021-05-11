@@ -13,7 +13,6 @@ export const useLogout = (props: UseLogoutProps = { isReady: true }) => {
   const logout = (): Promise<void> => {
     return new Promise((resolve) => {
       const userId = user?.id;
-      console.log('userId', user);
       sessionStorage.removeItem('jwtToken');
 
       if (userId) {
