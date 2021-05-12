@@ -1,4 +1,4 @@
-import { Box, HTMLChakraProps, Link, Image } from '@chakra-ui/react';
+import { Box, HTMLChakraProps, Link, Image, Tag, HStack, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import { RetailerProductFragment } from '../../@types/generated';
@@ -15,7 +15,10 @@ export const ProductSearchResult = ({ product, onProductSelect, ...restProps }: 
       <Box display="flex">
         <Image width="4rem" height="4rem" marginRight="0.5rem" src={product.imageUrl} objectFit="contain" borderRadius="md" />
         <Box flexGrow={1} marginRight="1rem">
-          <Box>{product.name}</Box>
+          <HStack alignItems="start">
+            {product.isOnSpecial && <Box flexShrink={0}><Tag colorScheme="yellow">On special</Tag></Box>}
+            <Text isTruncated>{product.name}</Text>
+          </HStack>
           <Box>{product.packageSize}</Box>
         </Box>
         <PriceBlock price={product.latestPrice} previousPrice={product.previousPrice} unitPrice={product.unitPrice} />

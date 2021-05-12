@@ -143,6 +143,7 @@ export type RetailerProduct = {
   packageSize?: Maybe<Scalars['String']>;
   retailer: RetailerEnum;
   isUnavailable?: Maybe<Scalars['Boolean']>;
+  isOnSpecial?: Maybe<Scalars['Boolean']>;
   prices?: Maybe<Array<ProductPrice>>;
   latestPrice?: Maybe<ProductPrice>;
   previousPrice?: Maybe<ProductPrice>;
@@ -169,7 +170,7 @@ export type BasicUserDetailsFragment = Pick<User, 'id' | 'email'>;
 export type ProductPriceFragment = Pick<ProductPrice, 'id' | 'value' | 'observedAtDateTime'>;
 
 export type RetailerProductFragment = (
-  Pick<RetailerProduct, 'id' | 'brand' | 'name' | 'imageUrl' | 'productPageUrl' | 'unitPrice' | 'packageSize' | 'retailer' | 'isUnavailable'>
+  Pick<RetailerProduct, 'id' | 'brand' | 'name' | 'imageUrl' | 'productPageUrl' | 'unitPrice' | 'packageSize' | 'retailer' | 'isUnavailable' | 'isOnSpecial'>
   & { previousPrice?: Maybe<ProductPriceFragment>, latestPrice?: Maybe<ProductPriceFragment>, prices?: Maybe<Array<ProductPriceFragment>> }
 );
 
@@ -264,6 +265,7 @@ export const RetailerProductFragmentDoc = gql`
   packageSize
   retailer
   isUnavailable
+  isOnSpecial
   previousPrice {
     ...ProductPrice
   }
@@ -722,6 +724,7 @@ export type RetailerProductResolvers<ContextType = any, ParentType extends Resol
   packageSize?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   retailer?: Resolver<ResolversTypes['RetailerEnum'], ParentType, ContextType>;
   isUnavailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  isOnSpecial?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   prices?: Resolver<Maybe<Array<ResolversTypes['ProductPrice']>>, ParentType, ContextType>;
   latestPrice?: Resolver<Maybe<ResolversTypes['ProductPrice']>, ParentType, ContextType>;
   previousPrice?: Resolver<Maybe<ResolversTypes['ProductPrice']>, ParentType, ContextType>;

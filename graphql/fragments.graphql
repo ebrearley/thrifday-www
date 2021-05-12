@@ -19,6 +19,7 @@ fragment RetailerProduct on RetailerProduct {
   packageSize
   retailer
   isUnavailable
+  isOnSpecial
   previousPrice {
     ...ProductPrice
   }

@@ -1,10 +1,9 @@
 import React from 'react';
+import { ProductListing } from '../components/ProductListing';
 
 
 export default function Specials() {
   return (
-    <div>
-      Specials
-    </div>
+    <ProductListing isSpecialOnly />
   )
 }

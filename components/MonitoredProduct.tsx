@@ -1,4 +1,4 @@
-import { Box, Flex, HTMLChakraProps, Text, Link, Image, LinkBox, LinkOverlay, Heading } from '@chakra-ui/react';
+import { Box, Flex, HTMLChakraProps, Text, Link, Image, LinkBox, LinkOverlay, Heading, HStack, Tag } from '@chakra-ui/react';
 import { first } from 'lodash';
 import React from 'react';
 import { MonitoredProductFragment } from '../@types/generated';
@@ -23,7 +23,12 @@ export const MonitoredProduct = ({ monitoredProduct, onMonitoredProductClick, ..
     <Box as="article" display="flex" rounded="md" padding="2" backgroundColor="gray.700" transition="0.2s background-color ease" {...restProps}>
       <Image width="4.5rem" height="4.5rem" marginRight="1rem" src={mainRetailerProduct.imageUrl} objectFit="contain" borderRadius="md" />
       <Box flexGrow={1} marginRight="1rem">
-        <Heading size="sm" marginBottom="1"><Link onClick={handleMonitoredProductClick}>{mainRetailerProduct.name}</Link></Heading>
+        <Heading size="sm" marginBottom="1"><Link onClick={handleMonitoredProductClick}>
+          <HStack alignItems="start">
+            {mainRetailerProduct.isOnSpecial && <Box flexShrink={0}><Tag textDecoration="none" colorScheme="yellow">On special</Tag></Box>}
+            <Text isTruncated>{mainRetailerProduct.name}</Text>
+          </HStack>
+          </Link></Heading>
         <Box>{mainRetailerProduct.packageSize}</Box>
         <Box>{mainRetailerProduct.retailer}</Box>
       </Box>

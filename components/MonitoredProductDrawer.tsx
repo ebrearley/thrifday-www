@@ -12,23 +12,15 @@ import {
   Input,
   InputGroup,
   InputLeftAddon,
-  InputRightAddon,
-  Select,
-  Text,
   Button,
-  Textarea,
-  Center,
-  Flex,
   HStack,
   Divider,
-  Spinner,
+  useToast,
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik';
 import { InputControl, SubmitButton } from 'formik-chakra-ui';
-import { head, isUndefined } from 'lodash';
 import React, { useEffect } from 'react';
 import { MonitoredProductFragment } from '../@types/generated';
-import { useProductSearch } from '../hooks/useProductSearch';
 import { useRemoveMonitoredProduct } from '../hooks/useRemoveMonitoredProduct';
 import { PriceHistoryGraph } from './PriceHistoryGraph';
 import { SimilarProuctsListing } from './SimilarProductsListing';
@@ -45,6 +37,7 @@ interface FormProps {
 
 export const MonitoredProductDrawer = ({ isOpen, onClose, monitoredProduct }: MonitoredProductDrawerProps) => {
   const [removeMonitoredProduct] = useRemoveMonitoredProduct()
+  const toast = useToast();
   
   useEffect(() => {
     if (!monitoredProduct) {
@@ -61,6 +54,11 @@ export const MonitoredProductDrawer = ({ isOpen, onClose, monitoredProduct }: Mo
     removeMonitoredProduct({
       monitoredProductId: monitoredProduct.id,
     }).then(() => {
+      toast({
+        status: 'success',
+        title: 'Product removed',
+        description: monitoredProduct.name,
+      });
       onClose();
     });
   }
