@@ -29,6 +29,7 @@ import { head, isUndefined } from 'lodash';
 import React, { useEffect } from 'react';
 import { MonitoredProductFragment } from '../@types/generated';
 import { useProductSearch } from '../hooks/useProductSearch';
+import { useRemoveMonitoredProduct } from '../hooks/useRemoveMonitoredProduct';
 import { PriceHistoryGraph } from './PriceHistoryGraph';
 import { SimilarProuctsListing } from './SimilarProductsListing';
 
@@ -43,6 +44,8 @@ interface FormProps {
 }
 
 export const MonitoredProductDrawer = ({ isOpen, onClose, monitoredProduct }: MonitoredProductDrawerProps) => {
+  const [removeMonitoredProduct] = useRemoveMonitoredProduct()
+  
   useEffect(() => {
     if (!monitoredProduct) {
       onClose();
@@ -52,6 +55,14 @@ export const MonitoredProductDrawer = ({ isOpen, onClose, monitoredProduct }: Mo
 
   const onSubmit = (values: FormProps) => {
 
+  }
+
+  const onRemoveClick = () => {
+    removeMonitoredProduct({
+      monitoredProductId: monitoredProduct.id,
+    }).then(() => {
+      onClose();
+    });
   }
 
   return (
@@ -79,7 +90,6 @@ export const MonitoredProductDrawer = ({ isOpen, onClose, monitoredProduct }: Mo
 
                 <SimilarProuctsListing monitoredProduct={monitoredProduct} />
 
-
                 <Box>
                   <FormLabel htmlFor="productName">Name (or nickname)</FormLabel>
                   <InputControl
@@ -106,7 +116,7 @@ export const MonitoredProductDrawer = ({ isOpen, onClose, monitoredProduct }: Mo
 
                 <Box>
                   <Divider marginBottom="1rem" />
-                  <Button colorScheme="red">Remove product</Button>
+                  <Button colorScheme="red" onClick={onRemoveClick}>Remove product</Button>
                 </Box>
               </Stack>
             </DrawerBody>

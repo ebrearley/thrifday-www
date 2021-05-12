@@ -1,0 +1,7 @@
+mutation RemoveMonitoredProduct($input: RemoveMonitoredProductInput!) {
+  removeMonitoredProduct(input: $input) {
+    removedItemWithId
+    errorMessage
+    successfulyRemoved
+  }
+}

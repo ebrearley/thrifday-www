@@ -16,8 +16,13 @@ type AddMonitoredProductMutationReturnProps = [
   MutationResult<AddMonitoredProductMutation>
 ]
 
-export const useMonitoredProduct = (props: AddMonitoredProductMutationProps = { errorPolicy: 'all' }): AddMonitoredProductMutationReturnProps => {
-  const [onAddMonitoredProduct, addMonitoredProductProps] = useAddMonitoredProductMutation(props);
+export const useAddMonitoredProduct = (props: AddMonitoredProductMutationProps = {}): AddMonitoredProductMutationReturnProps => {
+  const propssWithDefaults: MutationHookOptions<AddMonitoredProductMutation, AddMonitoredProductMutationVariables> = {
+    errorPolicy: 'all',
+    ...props,
+  };
+
+  const [onAddMonitoredProduct, addMonitoredProductProps] = useAddMonitoredProductMutation(propssWithDefaults);
   try {
     const addMonitoredProduct = (input: CreateMonitoredProductInput) => {
       return onAddMonitoredProduct({

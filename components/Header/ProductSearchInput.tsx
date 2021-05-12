@@ -4,7 +4,7 @@ import { head, isEmpty, isUndefined, map } from 'lodash';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { RetailerProductFragment } from '../../@types/generated';
-import { useMonitoredProduct } from '../../hooks/useMonitoredProduct';
+import { useAddMonitoredProduct } from '../../hooks/useAddMonitoredProduct';
 import { useProductSearch } from '../../hooks/useProductSearch';
 import formatAmount from '../../utils/formatAmount';
 import { TextLink } from '../TextLink';
@@ -21,7 +21,7 @@ export const ProductSearchInput = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isInputFocussed, setIsInputFocussed] = useState<boolean>(false);
   const toast = useToast();
-  const [addMonitoredProduct] = useMonitoredProduct();
+  const [addMonitoredProduct] = useAddMonitoredProduct();
   const { products, error } = useProductSearch({
     searchTerm,
     queryArgs: {

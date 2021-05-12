@@ -5,6 +5,9 @@ import merge from 'deepmerge';
 import isEqual from 'lodash/isEqual';
 import DebounceLink from 'apollo-link-debounce';
 
+import graphQlFragments from '../graphql/fragments.json';
+
+
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__'
 
 let apolloClient
@@ -35,7 +38,20 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: debounceLink.concat(authLink.concat(httpLink)),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      possibleTypes: graphQlFragments.possibleTypes,
+      typePolicies: {
+        User: {
+          fields: {
+            monitoredProducts : {
+              merge(existing, incoming) {
+                return incoming;
+              },
+            },
+          }
+        }
+      }
+    }),
   })
 }
 

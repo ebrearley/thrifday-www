@@ -17,3 +17,8 @@ generates:
   ./graphql/schema.json:
     plugins:
       - "introspection"
+  ./graphql/fragments.json:
+    plugins:
+      - fragment-matcher
+    config:
+      apolloClientVersion: 3

@@ -47,7 +47,7 @@ export type MonitoredProduct = {
 
 export type Mutation = {
   addMonitoredProduct?: Maybe<MonitoredProduct>;
-  removeMonitoredProduct?: Maybe<MonitoredProduct>;
+  removeMonitoredProduct?: Maybe<RemoveResult>;
   addProductPageToMonitoredProduct?: Maybe<MonitoredProduct>;
   removeProductPageFromMonitoredProduct?: Maybe<MonitoredProduct>;
   register: TokenUser;
@@ -120,6 +120,12 @@ export type RemoveProductPagesFromMonitoredProductInput = {
   productPageIds: Array<Scalars['ID']>;
 };
 
+export type RemoveResult = {
+  removedItemWithId: Scalars['ID'];
+  errorMessage?: Maybe<Scalars['String']>;
+  successfulyRemoved: Scalars['Boolean'];
+};
+
 export enum RetailerEnum {
   Coles = 'Coles',
   Woolworths = 'Woolworths',
@@ -172,24 +178,6 @@ export type MonitoredProductFragment = (
   & { retailerProducts: Array<RetailerProductFragment> }
 );
 
-export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CurrentUserQuery = { currentUser?: Maybe<(
-    { monitoredProducts?: Maybe<Array<MonitoredProductFragment>> }
-    & BasicUserDetailsFragment
-  )> };
-
-export type LoginMutationVariables = Exact<{
-  input: AuthLoginInput;
-}>;
-
-
-export type LoginMutation = { login: (
-    Pick<TokenUser, 'token'>
-    & { user: BasicUserDetailsFragment }
-  ) };
-
 export type AddMonitoredProductMutationVariables = Exact<{
   input: CreateMonitoredProductInput;
 }>;
@@ -210,6 +198,24 @@ export type AddProductToMonitoredProductMutation = { addProductPageToMonitoredPr
     & { retailerProducts: Array<RetailerProductFragment> }
   )> };
 
+export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CurrentUserQuery = { currentUser?: Maybe<(
+    { monitoredProducts?: Maybe<Array<MonitoredProductFragment>> }
+    & BasicUserDetailsFragment
+  )> };
+
+export type LoginMutationVariables = Exact<{
+  input: AuthLoginInput;
+}>;
+
+
+export type LoginMutation = { login: (
+    Pick<TokenUser, 'token'>
+    & { user: BasicUserDetailsFragment }
+  ) };
+
 export type ProductSearchQueryVariables = Exact<{
   input: RetailerProductSearchTermInput;
 }>;
@@ -226,6 +232,13 @@ export type RegisterMutation = { register: (
     Pick<TokenUser, 'token'>
     & { user: BasicUserDetailsFragment }
   ) };
+
+export type RemoveMonitoredProductMutationVariables = Exact<{
+  input: RemoveMonitoredProductInput;
+}>;
+
+
+export type RemoveMonitoredProductMutation = { removeMonitoredProduct?: Maybe<Pick<RemoveResult, 'removedItemWithId' | 'errorMessage' | 'successfulyRemoved'>> };
 
 export const BasicUserDetailsFragmentDoc = gql`
     fragment BasicUserDetails on User {
@@ -271,6 +284,80 @@ export const MonitoredProductFragmentDoc = gql`
   }
 }
     ${RetailerProductFragmentDoc}`;
+export const AddMonitoredProductDocument = gql`
+    mutation AddMonitoredProduct($input: CreateMonitoredProductInput!) {
+  addMonitoredProduct(input: $input) {
+    id
+    name
+    retailerProducts {
+      ...RetailerProduct
+    }
+  }
+}
+    ${RetailerProductFragmentDoc}`;
+export type AddMonitoredProductMutationFn = Apollo.MutationFunction<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>;
+
+/**
+ * __useAddMonitoredProductMutation__
+ *
+ * To run a mutation, you first call `useAddMonitoredProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddMonitoredProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addMonitoredProductMutation, { data, loading, error }] = useAddMonitoredProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddMonitoredProductMutation(baseOptions?: Apollo.MutationHookOptions<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>(AddMonitoredProductDocument, options);
+      }
+export type AddMonitoredProductMutationHookResult = ReturnType<typeof useAddMonitoredProductMutation>;
+export type AddMonitoredProductMutationResult = Apollo.MutationResult<AddMonitoredProductMutation>;
+export type AddMonitoredProductMutationOptions = Apollo.BaseMutationOptions<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>;
+export const AddProductToMonitoredProductDocument = gql`
+    mutation AddProductToMonitoredProduct($input: AddProductPageToMonitoredProductInput!) {
+  addProductPageToMonitoredProduct(input: $input) {
+    id
+    name
+    retailerProducts {
+      ...RetailerProduct
+    }
+  }
+}
+    ${RetailerProductFragmentDoc}`;
+export type AddProductToMonitoredProductMutationFn = Apollo.MutationFunction<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>;
+
+/**
+ * __useAddProductToMonitoredProductMutation__
+ *
+ * To run a mutation, you first call `useAddProductToMonitoredProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProductToMonitoredProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProductToMonitoredProductMutation, { data, loading, error }] = useAddProductToMonitoredProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddProductToMonitoredProductMutation(baseOptions?: Apollo.MutationHookOptions<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>(AddProductToMonitoredProductDocument, options);
+      }
+export type AddProductToMonitoredProductMutationHookResult = ReturnType<typeof useAddProductToMonitoredProductMutation>;
+export type AddProductToMonitoredProductMutationResult = Apollo.MutationResult<AddProductToMonitoredProductMutation>;
+export type AddProductToMonitoredProductMutationOptions = Apollo.BaseMutationOptions<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>;
 export const CurrentUserDocument = gql`
     query CurrentUser {
   currentUser {
@@ -348,80 +435,6 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const AddMonitoredProductDocument = gql`
-    mutation AddMonitoredProduct($input: CreateMonitoredProductInput!) {
-  addMonitoredProduct(input: $input) {
-    id
-    name
-    retailerProducts {
-      ...RetailerProduct
-    }
-  }
-}
-    ${RetailerProductFragmentDoc}`;
-export type AddMonitoredProductMutationFn = Apollo.MutationFunction<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>;
-
-/**
- * __useAddMonitoredProductMutation__
- *
- * To run a mutation, you first call `useAddMonitoredProductMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddMonitoredProductMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addMonitoredProductMutation, { data, loading, error }] = useAddMonitoredProductMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddMonitoredProductMutation(baseOptions?: Apollo.MutationHookOptions<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>(AddMonitoredProductDocument, options);
-      }
-export type AddMonitoredProductMutationHookResult = ReturnType<typeof useAddMonitoredProductMutation>;
-export type AddMonitoredProductMutationResult = Apollo.MutationResult<AddMonitoredProductMutation>;
-export type AddMonitoredProductMutationOptions = Apollo.BaseMutationOptions<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>;
-export const AddProductToMonitoredProductDocument = gql`
-    mutation AddProductToMonitoredProduct($input: AddProductPageToMonitoredProductInput!) {
-  addProductPageToMonitoredProduct(input: $input) {
-    id
-    name
-    retailerProducts {
-      ...RetailerProduct
-    }
-  }
-}
-    ${RetailerProductFragmentDoc}`;
-export type AddProductToMonitoredProductMutationFn = Apollo.MutationFunction<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>;
-
-/**
- * __useAddProductToMonitoredProductMutation__
- *
- * To run a mutation, you first call `useAddProductToMonitoredProductMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddProductToMonitoredProductMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addProductToMonitoredProductMutation, { data, loading, error }] = useAddProductToMonitoredProductMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddProductToMonitoredProductMutation(baseOptions?: Apollo.MutationHookOptions<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>(AddProductToMonitoredProductDocument, options);
-      }
-export type AddProductToMonitoredProductMutationHookResult = ReturnType<typeof useAddProductToMonitoredProductMutation>;
-export type AddProductToMonitoredProductMutationResult = Apollo.MutationResult<AddProductToMonitoredProductMutation>;
-export type AddProductToMonitoredProductMutationOptions = Apollo.BaseMutationOptions<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>;
 export const ProductSearchDocument = gql`
     query ProductSearch($input: RetailerProductSearchTermInput!) {
   products(input: $input) {
@@ -496,6 +509,41 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const RemoveMonitoredProductDocument = gql`
+    mutation RemoveMonitoredProduct($input: RemoveMonitoredProductInput!) {
+  removeMonitoredProduct(input: $input) {
+    removedItemWithId
+    errorMessage
+    successfulyRemoved
+  }
+}
+    `;
+export type RemoveMonitoredProductMutationFn = Apollo.MutationFunction<RemoveMonitoredProductMutation, RemoveMonitoredProductMutationVariables>;
+
+/**
+ * __useRemoveMonitoredProductMutation__
+ *
+ * To run a mutation, you first call `useRemoveMonitoredProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMonitoredProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMonitoredProductMutation, { data, loading, error }] = useRemoveMonitoredProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveMonitoredProductMutation(baseOptions?: Apollo.MutationHookOptions<RemoveMonitoredProductMutation, RemoveMonitoredProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveMonitoredProductMutation, RemoveMonitoredProductMutationVariables>(RemoveMonitoredProductDocument, options);
+      }
+export type RemoveMonitoredProductMutationHookResult = ReturnType<typeof useRemoveMonitoredProductMutation>;
+export type RemoveMonitoredProductMutationResult = Apollo.MutationResult<RemoveMonitoredProductMutation>;
+export type RemoveMonitoredProductMutationOptions = Apollo.BaseMutationOptions<RemoveMonitoredProductMutation, RemoveMonitoredProductMutationVariables>;
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
 
@@ -590,9 +638,10 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>;
   RemoveMonitoredProductInput: RemoveMonitoredProductInput;
   RemoveProductPagesFromMonitoredProductInput: RemoveProductPagesFromMonitoredProductInput;
+  RemoveResult: ResolverTypeWrapper<RemoveResult>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   RetailerEnum: RetailerEnum;
   RetailerProduct: ResolverTypeWrapper<RetailerProduct>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   RetailerProductSearchTermInput: RetailerProductSearchTermInput;
   TokenUser: ResolverTypeWrapper<TokenUser>;
   User: ResolverTypeWrapper<User>;
@@ -615,8 +664,9 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {};
   RemoveMonitoredProductInput: RemoveMonitoredProductInput;
   RemoveProductPagesFromMonitoredProductInput: RemoveProductPagesFromMonitoredProductInput;
-  RetailerProduct: RetailerProduct;
+  RemoveResult: RemoveResult;
   Boolean: Scalars['Boolean'];
+  RetailerProduct: RetailerProduct;
   RetailerProductSearchTermInput: RetailerProductSearchTermInput;
   TokenUser: TokenUser;
   User: User;
@@ -635,7 +685,7 @@ export type MonitoredProductResolvers<ContextType = any, ParentType extends Reso
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   addMonitoredProduct?: Resolver<Maybe<ResolversTypes['MonitoredProduct']>, ParentType, ContextType, RequireFields<MutationAddMonitoredProductArgs, 'input'>>;
-  removeMonitoredProduct?: Resolver<Maybe<ResolversTypes['MonitoredProduct']>, ParentType, ContextType, RequireFields<MutationRemoveMonitoredProductArgs, 'input'>>;
+  removeMonitoredProduct?: Resolver<Maybe<ResolversTypes['RemoveResult']>, ParentType, ContextType, RequireFields<MutationRemoveMonitoredProductArgs, 'input'>>;
   addProductPageToMonitoredProduct?: Resolver<Maybe<ResolversTypes['MonitoredProduct']>, ParentType, ContextType, RequireFields<MutationAddProductPageToMonitoredProductArgs, 'input'>>;
   removeProductPageFromMonitoredProduct?: Resolver<Maybe<ResolversTypes['MonitoredProduct']>, ParentType, ContextType, RequireFields<MutationRemoveProductPageFromMonitoredProductArgs, 'input'>>;
   register?: Resolver<ResolversTypes['TokenUser'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'input'>>;
@@ -653,6 +703,13 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   products?: Resolver<Array<ResolversTypes['RetailerProduct']>, ParentType, ContextType, RequireFields<QueryProductsArgs, 'input'>>;
   retailerProduct?: Resolver<Maybe<ResolversTypes['RetailerProduct']>, ParentType, ContextType, RequireFields<QueryRetailerProductArgs, 'input'>>;
+}>;
+
+export type RemoveResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['RemoveResult'] = ResolversParentTypes['RemoveResult']> = ResolversObject<{
+  removedItemWithId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  errorMessage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  successfulyRemoved?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type RetailerProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['RetailerProduct'] = ResolversParentTypes['RetailerProduct']> = ResolversObject<{
@@ -690,6 +747,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Mutation?: MutationResolvers<ContextType>;
   ProductPrice?: ProductPriceResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  RemoveResult?: RemoveResultResolvers<ContextType>;
   RetailerProduct?: RetailerProductResolvers<ContextType>;
   TokenUser?: TokenUserResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
