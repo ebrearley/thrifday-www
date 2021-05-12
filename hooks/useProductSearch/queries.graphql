@@ -1,0 +1,5 @@
+query ProductSearch($input: RetailerProductSearchTermInput!) {
+  products(input: $input) {
+    ...RetailerProduct
+  }
+}

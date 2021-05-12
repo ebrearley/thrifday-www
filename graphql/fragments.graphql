@@ -1,0 +1,40 @@
+fragment BasicUserDetails on User {
+  id
+  email
+}
+
+fragment ProductPrice on ProductPrice {
+  id
+  value
+  observedAtDateTime
+}
+
+fragment RetailerProduct on RetailerProduct {
+  id
+  brand
+  name
+  imageUrl
+  productPageUrl
+  unitPrice
+  packageSize
+  retailer
+  isUnavailable
+  isOnSpecial
+  previousPrice {
+    ...ProductPrice
+  }
+  latestPrice {
+    ...ProductPrice
+  }
+  prices {
+    ...ProductPrice
+  }
+}
+
+fragment MonitoredProduct on MonitoredProduct {
+  id
+  name
+  retailerProducts {
+    ...RetailerProduct
+  }
+}

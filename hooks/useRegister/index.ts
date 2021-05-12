@@ -5,9 +5,9 @@ import {
   RegisterMutation,
   RegisterMutationVariables,
   AuthRegisterInput,
-  // RegisterMutationResult,
   useRegisterMutation,
 } from '../../@types/generated';
+import { addUserToApolloCache } from '../../utils/addUserToApolloCache';
 
 
 type LoginMutationProps = MutationHookOptions<RegisterMutation, RegisterMutationVariables>;
@@ -17,35 +17,28 @@ type LoginMutationReturnProps = [
 ]
 
 export const useRegister = (props: LoginMutationProps = { errorPolicy: 'all' }): LoginMutationReturnProps => {
-  const onCompleted = (data: RegisterMutation) => {
-    const token = data?.register?.token;
-    if (token) {
-      sessionStorage.setItem('jwtToken', token);
-    }
-
-    if (props.onCompleted) {
-      props.onCompleted(data);
-    }
-  }
-
-  const propsWithCompleted = {
-    ...props,
-    onCompleted,
-  }
-
-  const [onRegister, registerProps] = useRegisterMutation(propsWithCompleted);
+  const [onRegister, registerProps] = useRegisterMutation(props);
   try {
     const register = (input: AuthRegisterInput) => {
-      return onRegister({
-        variables: {
-          input,
-        }
-        // refetchQueries: (mutationResult: RegisterMutationResult) => {
-        //   return [
-        //     { query: CurrentUserDocument, fetchPolicy: 'cache-and-network' },
-        //     { query: GetCartDocument, variables: { input: { cartId } } },
-        //   ];
-        // },
+      return new Promise(resolve => {
+        onRegister({
+          variables: {
+            input,
+          },
+        }).then(async (mutationResult) => {
+          const token = mutationResult?.data?.register?.token;
+          const user = mutationResult?.data?.register?.user;
+
+          if (token) {
+            sessionStorage.setItem('jwtToken', token);
+          }
+
+          if (user) {
+            addUserToApolloCache({ user, client: registerProps.client })
+          }
+
+          resolve(mutationResult);
+        });;
       });
     };
 
@@ -55,10 +48,8 @@ export const useRegister = (props: LoginMutationProps = { errorPolicy: 'all' }):
     ];
   } catch (error) {
     return [
-      noop,
+      noop as any,
       registerProps,
     ];
   }
 };
-
-export default useRegister;

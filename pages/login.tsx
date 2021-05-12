@@ -1,7 +1,10 @@
-import React from 'react';
-import LoginForm from '../components/loginForm';
-import useCurrentUser from '../hooks/useCurrentUser'
 import { useRouter } from 'next/router'
+import React from 'react';
+
+import { AuthType } from '../components/Auth/@enums/AuthType';
+import { AuthForm } from '../components/Auth/AuthForm';
+import { useCurrentUser } from '../hooks/useCurrentUser'
+import { WelcomeMessage } from '../components/WelcomeMessage';
 
 export default function Login() {
   const { user, isLoading } = useCurrentUser();
@@ -21,8 +24,8 @@ export default function Login() {
 
   return (
     <>
-      <h1>Login</h1>
-      <LoginForm />
+      <WelcomeMessage marginTop="16" />
+      <AuthForm authType={AuthType.Login} />
     </>
   )
 };

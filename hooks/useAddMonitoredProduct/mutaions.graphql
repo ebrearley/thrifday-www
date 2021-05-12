@@ -1,0 +1,19 @@
+mutation AddMonitoredProduct($input: CreateMonitoredProductInput!) {
+  addMonitoredProduct(input: $input) {
+    id
+    name
+    retailerProducts {
+      ...RetailerProduct
+    }
+  }
+}
+
+mutation AddProductToMonitoredProduct($input: AddProductPageToMonitoredProductInput!) {
+  addProductPageToMonitoredProduct(input: $input) {
+    id
+    name
+    retailerProducts {
+      ...RetailerProduct
+    }
+  }
+}
