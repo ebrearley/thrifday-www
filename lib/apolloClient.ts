@@ -3,10 +3,13 @@ import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject } from '@a
 import { setContext } from '@apollo/client/link/context';
 import merge from 'deepmerge';
 import isEqual from 'lodash/isEqual';
+import DebounceLink from 'apollo-link-debounce';
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__'
 
 let apolloClient
+
+const debounceLink = new DebounceLink(100);
 
 const httpLink = new HttpLink({
   uri: 'http://localhost:4000/graphql', // Server URL (must be absolute)
@@ -31,7 +34,7 @@ const authLink = setContext((_, { headers }) => {
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: authLink.concat(httpLink),
+    link: debounceLink.concat(authLink.concat(httpLink)),
     cache: new InMemoryCache(),
   })
 }

@@ -138,6 +138,7 @@ export type RetailerProduct = {
   retailer: RetailerEnum;
   isUnavailable?: Maybe<Scalars['Boolean']>;
   prices?: Maybe<Array<ProductPrice>>;
+  latestPrice?: Maybe<ProductPrice>;
 };
 
 export type RetailerProductSearchTermInput = {
@@ -158,6 +159,13 @@ export type User = {
 
 export type BasicUserDetailsFragment = Pick<User, 'id' | 'email'>;
 
+export type ProductPriceFragment = Pick<ProductPrice, 'id' | 'value' | 'observedAtDateTime'>;
+
+export type RetailerProductFragment = (
+  Pick<RetailerProduct, 'id' | 'brand' | 'name' | 'imageUrl' | 'productPageUrl' | 'unitPrice' | 'packageSize' | 'retailer' | 'isUnavailable'>
+  & { latestPrice?: Maybe<ProductPriceFragment>, prices?: Maybe<Array<ProductPriceFragment>> }
+);
+
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -172,6 +180,13 @@ export type LoginMutation = { login: (
     Pick<TokenUser, 'token'>
     & { user: BasicUserDetailsFragment }
   ) };
+
+export type ProductSearchQueryVariables = Exact<{
+  input: RetailerProductSearchTermInput;
+}>;
+
+
+export type ProductSearchQuery = { products: Array<RetailerProductFragment> };
 
 export type RegisterMutationVariables = Exact<{
   input: AuthRegisterInput;
@@ -189,6 +204,32 @@ export const BasicUserDetailsFragmentDoc = gql`
   email
 }
     `;
+export const ProductPriceFragmentDoc = gql`
+    fragment ProductPrice on ProductPrice {
+  id
+  value
+  observedAtDateTime
+}
+    `;
+export const RetailerProductFragmentDoc = gql`
+    fragment RetailerProduct on RetailerProduct {
+  id
+  brand
+  name
+  imageUrl
+  productPageUrl
+  unitPrice
+  packageSize
+  retailer
+  isUnavailable
+  latestPrice {
+    ...ProductPrice
+  }
+  prices {
+    ...ProductPrice
+  }
+}
+    ${ProductPriceFragmentDoc}`;
 export const CurrentUserDocument = gql`
     query CurrentUser {
   currentUser {
@@ -263,6 +304,44 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const ProductSearchDocument = gql`
+    query ProductSearch($input: RetailerProductSearchTermInput!) {
+  products(input: $input) {
+    ...RetailerProduct
+  }
+}
+    ${RetailerProductFragmentDoc}`;
+
+/**
+ * __useProductSearchQuery__
+ *
+ * To run a query within a React component, call `useProductSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductSearchQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useProductSearchQuery(baseOptions: Apollo.QueryHookOptions<ProductSearchQuery, ProductSearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductSearchQuery, ProductSearchQueryVariables>(ProductSearchDocument, options);
+      }
+export function useProductSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductSearchQuery, ProductSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductSearchQuery, ProductSearchQueryVariables>(ProductSearchDocument, options);
+        }
+export type ProductSearchQueryHookResult = ReturnType<typeof useProductSearchQuery>;
+export type ProductSearchLazyQueryHookResult = ReturnType<typeof useProductSearchLazyQuery>;
+export type ProductSearchQueryResult = Apollo.QueryResult<ProductSearchQuery, ProductSearchQueryVariables>;
+export function refetchProductSearchQuery(variables?: ProductSearchQueryVariables) {
+      return { query: ProductSearchDocument, variables: variables }
+    }
 export const RegisterDocument = gql`
     mutation Register($input: AuthRegisterInput!) {
   register(input: $input) {
@@ -469,6 +548,7 @@ export type RetailerProductResolvers<ContextType = any, ParentType extends Resol
   retailer?: Resolver<ResolversTypes['RetailerEnum'], ParentType, ContextType>;
   isUnavailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   prices?: Resolver<Maybe<Array<ResolversTypes['ProductPrice']>>, ParentType, ContextType>;
+  latestPrice?: Resolver<Maybe<ResolversTypes['ProductPrice']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

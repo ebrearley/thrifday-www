@@ -2,7 +2,8 @@ import { SearchIcon } from '@chakra-ui/icons';
 import { Box, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { HTMLChakraProps } from '@chakra-ui/react';
 import React from 'react';
-import { Logo } from './Logo';
+import { Logo } from '../Logo';
+import { ProductSearchInput } from './ProductSearchInput';
 
 export const Header = (props: HTMLChakraProps<'header'>) => (
   <>
@@ -25,11 +26,7 @@ export const Header = (props: HTMLChakraProps<'header'>) => (
     >
       <Logo marginRight="2rem" />
       <InputGroup>
-        <InputLeftElement
-          pointerEvents="none"
-          children={<SearchIcon color="gray.300" />}
-        />
-        <Input placeholder="Search for products" backgroundColor="gray.700" />
+        <ProductSearchInput />
       </InputGroup>
     </Box>
     <Box height="4rem">

@@ -2,3 +2,27 @@ fragment BasicUserDetails on User {
   id
   email
 }
+
+fragment ProductPrice on ProductPrice {
+  id
+  value
+  observedAtDateTime
+}
+
+fragment RetailerProduct on RetailerProduct {
+  id
+  brand
+  name
+  imageUrl
+  productPageUrl
+  unitPrice
+  packageSize
+  retailer
+  isUnavailable
+  latestPrice {
+    ...ProductPrice
+  }
+  prices {
+    ...ProductPrice
+  }
+}
