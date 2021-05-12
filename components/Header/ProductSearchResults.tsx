@@ -8,10 +8,11 @@ interface ProductSearchResulsdProps extends HTMLChakraProps<'div'> {
   products: RetailerProductFragment[];
   isOpen: boolean;
   onOutsideClick: () => void;
+  onProductSelect: (product: RetailerProductFragment) => void;
 }
 
-export const ProductSearchResults = ({ products, isOpen, onOutsideClick, ...restProps }: ProductSearchResulsdProps) => {
-  const productSearchResults = map(products, (product) => <ProductSearchResult key={product.id} product={product} />);
+export const ProductSearchResults = ({ products, isOpen, onOutsideClick, onProductSelect, ...restProps }: ProductSearchResulsdProps) => {
+  const productSearchResults = map(products, (product) => <ProductSearchResult key={product.id} product={product} onProductSelect={onProductSelect} />);
   const ref = React.useRef();
   useOutsideClick({
     ref: ref,

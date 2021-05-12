@@ -139,6 +139,7 @@ export type RetailerProduct = {
   isUnavailable?: Maybe<Scalars['Boolean']>;
   prices?: Maybe<Array<ProductPrice>>;
   latestPrice?: Maybe<ProductPrice>;
+  previousPrice?: Maybe<ProductPrice>;
 };
 
 export type RetailerProductSearchTermInput = {
@@ -163,13 +164,21 @@ export type ProductPriceFragment = Pick<ProductPrice, 'id' | 'value' | 'observed
 
 export type RetailerProductFragment = (
   Pick<RetailerProduct, 'id' | 'brand' | 'name' | 'imageUrl' | 'productPageUrl' | 'unitPrice' | 'packageSize' | 'retailer' | 'isUnavailable'>
-  & { latestPrice?: Maybe<ProductPriceFragment>, prices?: Maybe<Array<ProductPriceFragment>> }
+  & { previousPrice?: Maybe<ProductPriceFragment>, latestPrice?: Maybe<ProductPriceFragment>, prices?: Maybe<Array<ProductPriceFragment>> }
+);
+
+export type MonitoredProductFragment = (
+  Pick<MonitoredProduct, 'id' | 'name'>
+  & { retailerProducts: Array<RetailerProductFragment> }
 );
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { currentUser?: Maybe<Pick<User, 'id' | 'email'>> };
+export type CurrentUserQuery = { currentUser?: Maybe<(
+    { monitoredProducts?: Maybe<Array<MonitoredProductFragment>> }
+    & BasicUserDetailsFragment
+  )> };
 
 export type LoginMutationVariables = Exact<{
   input: AuthLoginInput;
@@ -180,6 +189,26 @@ export type LoginMutation = { login: (
     Pick<TokenUser, 'token'>
     & { user: BasicUserDetailsFragment }
   ) };
+
+export type AddMonitoredProductMutationVariables = Exact<{
+  input: CreateMonitoredProductInput;
+}>;
+
+
+export type AddMonitoredProductMutation = { addMonitoredProduct?: Maybe<(
+    Pick<MonitoredProduct, 'id' | 'name'>
+    & { retailerProducts: Array<RetailerProductFragment> }
+  )> };
+
+export type AddProductToMonitoredProductMutationVariables = Exact<{
+  input: AddProductPageToMonitoredProductInput;
+}>;
+
+
+export type AddProductToMonitoredProductMutation = { addProductPageToMonitoredProduct?: Maybe<(
+    Pick<MonitoredProduct, 'id' | 'name'>
+    & { retailerProducts: Array<RetailerProductFragment> }
+  )> };
 
 export type ProductSearchQueryVariables = Exact<{
   input: RetailerProductSearchTermInput;
@@ -222,6 +251,9 @@ export const RetailerProductFragmentDoc = gql`
   packageSize
   retailer
   isUnavailable
+  previousPrice {
+    ...ProductPrice
+  }
   latestPrice {
     ...ProductPrice
   }
@@ -230,14 +262,26 @@ export const RetailerProductFragmentDoc = gql`
   }
 }
     ${ProductPriceFragmentDoc}`;
+export const MonitoredProductFragmentDoc = gql`
+    fragment MonitoredProduct on MonitoredProduct {
+  id
+  name
+  retailerProducts {
+    ...RetailerProduct
+  }
+}
+    ${RetailerProductFragmentDoc}`;
 export const CurrentUserDocument = gql`
     query CurrentUser {
   currentUser {
-    id
-    email
+    ...BasicUserDetails
+    monitoredProducts {
+      ...MonitoredProduct
+    }
   }
 }
-    `;
+    ${BasicUserDetailsFragmentDoc}
+${MonitoredProductFragmentDoc}`;
 
 /**
  * __useCurrentUserQuery__
@@ -304,6 +348,80 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const AddMonitoredProductDocument = gql`
+    mutation AddMonitoredProduct($input: CreateMonitoredProductInput!) {
+  addMonitoredProduct(input: $input) {
+    id
+    name
+    retailerProducts {
+      ...RetailerProduct
+    }
+  }
+}
+    ${RetailerProductFragmentDoc}`;
+export type AddMonitoredProductMutationFn = Apollo.MutationFunction<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>;
+
+/**
+ * __useAddMonitoredProductMutation__
+ *
+ * To run a mutation, you first call `useAddMonitoredProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddMonitoredProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addMonitoredProductMutation, { data, loading, error }] = useAddMonitoredProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddMonitoredProductMutation(baseOptions?: Apollo.MutationHookOptions<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>(AddMonitoredProductDocument, options);
+      }
+export type AddMonitoredProductMutationHookResult = ReturnType<typeof useAddMonitoredProductMutation>;
+export type AddMonitoredProductMutationResult = Apollo.MutationResult<AddMonitoredProductMutation>;
+export type AddMonitoredProductMutationOptions = Apollo.BaseMutationOptions<AddMonitoredProductMutation, AddMonitoredProductMutationVariables>;
+export const AddProductToMonitoredProductDocument = gql`
+    mutation AddProductToMonitoredProduct($input: AddProductPageToMonitoredProductInput!) {
+  addProductPageToMonitoredProduct(input: $input) {
+    id
+    name
+    retailerProducts {
+      ...RetailerProduct
+    }
+  }
+}
+    ${RetailerProductFragmentDoc}`;
+export type AddProductToMonitoredProductMutationFn = Apollo.MutationFunction<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>;
+
+/**
+ * __useAddProductToMonitoredProductMutation__
+ *
+ * To run a mutation, you first call `useAddProductToMonitoredProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProductToMonitoredProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProductToMonitoredProductMutation, { data, loading, error }] = useAddProductToMonitoredProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddProductToMonitoredProductMutation(baseOptions?: Apollo.MutationHookOptions<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>(AddProductToMonitoredProductDocument, options);
+      }
+export type AddProductToMonitoredProductMutationHookResult = ReturnType<typeof useAddProductToMonitoredProductMutation>;
+export type AddProductToMonitoredProductMutationResult = Apollo.MutationResult<AddProductToMonitoredProductMutation>;
+export type AddProductToMonitoredProductMutationOptions = Apollo.BaseMutationOptions<AddProductToMonitoredProductMutation, AddProductToMonitoredProductMutationVariables>;
 export const ProductSearchDocument = gql`
     query ProductSearch($input: RetailerProductSearchTermInput!) {
   products(input: $input) {
@@ -549,6 +667,7 @@ export type RetailerProductResolvers<ContextType = any, ParentType extends Resol
   isUnavailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   prices?: Resolver<Maybe<Array<ResolversTypes['ProductPrice']>>, ParentType, ContextType>;
   latestPrice?: Resolver<Maybe<ResolversTypes['ProductPrice']>, ParentType, ContextType>;
+  previousPrice?: Resolver<Maybe<ResolversTypes['ProductPrice']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

@@ -19,10 +19,21 @@ fragment RetailerProduct on RetailerProduct {
   packageSize
   retailer
   isUnavailable
+  previousPrice {
+    ...ProductPrice
+  }
   latestPrice {
     ...ProductPrice
   }
   prices {
     ...ProductPrice
+  }
+}
+
+fragment MonitoredProduct on MonitoredProduct {
+  id
+  name
+  retailerProducts {
+    ...RetailerProduct
   }
 }

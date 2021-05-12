@@ -1,6 +1,8 @@
 query CurrentUser {
   currentUser {
-    id
-    email
+    ...BasicUserDetails
+    monitoredProducts {
+      ...MonitoredProduct
+    }
   }
 }
