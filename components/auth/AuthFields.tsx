@@ -7,7 +7,7 @@ interface AuthFieldProps {
 }
 
 export const AuthFields = ({ isSubmitting, submitLabel }: AuthFieldProps) => (
-  <Stack spacing="8">
+  <Stack spacing="2rem">
     <InputControl inputProps={{ type: 'email',  placeholder: 'john.smith@email.com' }} name="email" label="Email address" />
     <InputControl inputProps={{ type: 'password',  placeholder: 'Password' }} name="password" label="Password" />
     <SubmitButton disabled={isSubmitting}>
