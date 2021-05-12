@@ -1,11 +1,11 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 
 interface LayoutProps {
-  children: ReactNode;
+  children: JSX.Element;
 }
 
 export const Layout = ({ children }: LayoutProps) => {
@@ -18,14 +18,13 @@ export const Layout = ({ children }: LayoutProps) => {
   return (
     <>
       <Header />
-      
-        <Flex>
+        <Flex minHeight="calc(100% - 4rem)">
           <Sidebar />
-            <Box flexGrow={1} backgroundColor="gray.900">
-              <main>
-                {children}
-              </main>
+          <Box flexGrow={1} backgroundColor="gray.900">
+            <Box as="main" height="100%" padding="1rem">
+              {children}
             </Box>
+          </Box>
         </Flex>
     </>
   )
