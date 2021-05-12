@@ -15,7 +15,7 @@ let apolloClient
 const debounceLink = new DebounceLink(100);
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000/graphql', // Server URL (must be absolute)
+  uri: process.env.API_ENDPOINT || 'http://localhost:4000/graphql', // Server URL (must be absolute)
   credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
 });
 
