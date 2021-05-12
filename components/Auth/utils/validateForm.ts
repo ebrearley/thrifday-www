@@ -1,8 +1,8 @@
-import { AuthFormValuesOrErrors } from "../@types/AuthFormValuesOrErrors";
+import { AuthFormValues } from '../@types/AuthFormValues';
 
 
-export const validateForm = (values: AuthFormValuesOrErrors) => {
-  const errors: AuthFormValuesOrErrors = {};
+export const validateForm = (values: AuthFormValues) => {
+  const errors: AuthFormValues = {};
 
   if (!values.email) {
     errors.email = 'Email required';

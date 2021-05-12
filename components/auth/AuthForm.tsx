@@ -9,7 +9,7 @@ import { AuthFields } from './AuthFields';
 import { useLogin } from '../../hooks/useLogin';
 import { useRegister } from '../../hooks/useRegister';
 import { useToast } from '@chakra-ui/react';
-import { AuthFormValuesOrErrors } from './@types/AuthFormValuesOrErrors';
+import { AuthFormValues } from './@types/AuthFormValues';
 import { validateForm } from './utils/validateForm';
 
 
@@ -44,7 +44,7 @@ export const AuthForm = (props: AuthFormProps) => {
 
   const auth = authDictionary[authType];
 
-  const onSubmit = (values: AuthFormValuesOrErrors, { setSubmitting }) => {
+  const onSubmit = (values: AuthFormValues, { setSubmitting }) => {
     auth.mutation({
       email: values.email,
       password: values.password,
