@@ -3,6 +3,9 @@ import { useRouter } from 'next/router';
 
 
 import { useCurrentUser } from '../hooks/useCurrentUser'
+import { initializeApollo } from '../lib/apolloClient';
+import { CurrentUserDocument, CurrentUserQueryResult } from '../@types/generated';
+import { GetServerSidePropsContext } from 'next';
 
 
 export default function Home() {
@@ -25,3 +28,16 @@ export default function Home() {
     </>
   )
 }
+
+// export async function getServerSideProps(context: GetServerSidePropsContext) {
+//   console.log('cookies', context.req.cookies);
+
+//   const apolloClient = initializeApollo();
+
+//   const result = await apolloClient.query<CurrentUserQueryResult>({
+//     query: CurrentUserDocument,
+//   });
+
+//   // console.log(result?.data?.data);
+
+// }
