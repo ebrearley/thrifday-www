@@ -16,7 +16,7 @@ services:
 
   api:
     container_name: thrifday-api
-    image: thrifday-api:latest
+    image: ericbrearley/thrifday-api:latest
     restart: always
     ports:
       - 4000:4000
