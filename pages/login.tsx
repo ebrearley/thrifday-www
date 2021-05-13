@@ -5,6 +5,7 @@ import { AuthType } from '../components/Auth/@enums/AuthType';
 import { AuthForm } from '../components/Auth/AuthForm';
 import { useCurrentUser } from '../hooks/useCurrentUser'
 import { WelcomeMessage } from '../components/WelcomeMessage';
+import { LoadingBlock } from '../components/LoadingBlock';
 
 export default function Login() {
   const { user, isLoading } = useCurrentUser();
@@ -12,9 +13,7 @@ export default function Login() {
 
   if (isLoading) {
     return (
-    <div>
-      Loading
-    </div>
+      <LoadingBlock>Loading...</LoadingBlock>
     );
   }
 

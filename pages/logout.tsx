@@ -1,9 +1,9 @@
-import { Box, Center, Spinner } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLogout } from '../hooks/useLogout';
+import { LoadingBlock } from '../components/LoadingBlock';
 
 
 export default function Logout() {
@@ -25,12 +25,7 @@ export default function Logout() {
   }, [user, isReadyToLogout]);
 
   return (
-    <Box paddingY="4rem">
-      <Center flexDirection="column">
-        Logging out
-        <Spinner marginTop="1rem" />
-      </Center>
-    </Box>
+    <LoadingBlock>Logging out</LoadingBlock>
   );
 }
 
