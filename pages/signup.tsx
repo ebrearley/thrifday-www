@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router'
 import React from 'react';
 
-import { AuthType } from '../components/Auth/@enums/AuthType';
-import { AuthForm } from '../components/Auth/AuthForm';
+import { AuthType } from '../components/auth/@enums/AuthType';
+import { AuthForm } from '../components/auth/AuthForm';
 import { useCurrentUser } from '../hooks/useCurrentUser'
 import { WelcomeMessage } from '../components/WelcomeMessage';
 
