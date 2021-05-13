@@ -1,0 +1,44 @@
+version: '3.3'
+
+services:
+  db:
+    container_name: thrifday-db
+    image: postgres:13.2
+    restart: always
+    ports:
+      - 54320:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: thrifday_db
+    volumes:
+      - thrifday-db:/var/lib/docker/volumes/thrifday-db/_data
+
+  api:
+    container_name: thrifday-api
+    image: ericbrearley/thrifday-api:latest
+    restart: always
+    ports:
+      - 4000:4000
+    environment:
+      POSTGRESS_DATABASE: thrifday_db
+      POSTGRESS_DATABASE_HOST: db
+      POSTGRESS_DATABASE_PORT: 5432
+      POSTGRESS_DATABASE_USER: postgres
+      POSTGRESS_DATABASE_PASSWORD: postgres
+      JWT_SECRET: superstrongsecret
+
+  web:
+    container_name: thrifday-www
+    restart: always
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      NEXT_PUBLIC_API_ENDPOINT: api
+      NEXT_PUBLIC_API_ENDPOINT_PORT: 4000
+      NEXT_PUBLIC_API_ENDPOINT_TRANSPORT: http
+
+volumes:
+  thrifday-db:
+    external: true
