@@ -5,7 +5,7 @@ import React from 'react';
 
 import '../styles/globals.css';
 import { Layout } from '../components/Layout';
-import { useApollo } from '../lib/apolloClient'
+import { useApollo } from '../hooks/useApollo';
 
 
 export default function App({ Component, pageProps }: AppProps) {
