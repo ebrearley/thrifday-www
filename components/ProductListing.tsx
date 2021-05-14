@@ -5,6 +5,7 @@ import { MonitoredProductFragment } from '../@types/generated';
 import { MonitoredProduct } from '../components/MonitoredProduct';
 import { MonitoredProductDrawer } from '../components/MonitoredProductDrawer';
 import { useCurrentUser } from '../hooks/useCurrentUser';
+import { LoadingBlock } from './LoadingBlock';
 
 interface ProductListingProps {
   isSpecialOnly?: boolean;
@@ -26,6 +27,11 @@ export const ProductListing = ({ isSpecialOnly }: ProductListingProps) => {
     }
   }, [currentMonitoredProduct, isOpen]);
 
+  if (isLoading) {
+    return (
+      <LoadingBlock>Loading {isSpecialOnly ? 'specials' : 'products'}</LoadingBlock>
+    );
+  }
 
   const monitoredProducts = compact(map(user?.monitoredProducts || [], monitoredProduct => {
     if (isSpecialOnly) {

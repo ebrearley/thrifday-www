@@ -22,11 +22,6 @@ export const Sidebar = () => {
     <Box borderRightWidth="1px" flexShrink={1} width="15rem">
       <Box position="fixed" padding="1rem" width="15rem" display="flex" flexDirection="column" justifyContent="space-between" height="calc(100% - 4rem)">
         <Stack as="nav">
-          <Link href="/">
-            <Button {...getButtonProps('/')}>
-              Home
-            </Button>
-          </Link>
           <Link href="/specials">
             <Button {...getButtonProps('/specials')}>
               Specials
