@@ -1,11 +1,13 @@
 import { Stack, useDisclosure } from '@chakra-ui/react';
-import { compact, map, some } from 'lodash';
+import { compact, isEmpty, map, some } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { MonitoredProductFragment } from '../@types/generated';
 import { MonitoredProduct } from '../components/MonitoredProduct';
 import { MonitoredProductDrawer } from '../components/MonitoredProductDrawer';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { LoadingBlock } from './LoadingBlock';
+import { NoProducts } from './NoProducts';
+import { NoSpecials } from './NoSpecials';
 
 interface ProductListingProps {
   isSpecialOnly?: boolean;
@@ -50,11 +52,26 @@ export const ProductListing = ({ isSpecialOnly }: ProductListingProps) => {
     )
   }));
 
+  const EmptyMessaging = () => {
+    const isProductsEmpty = isEmpty(user?.monitoredProducts);
+
+    if (isProductsEmpty) {
+      return <NoProducts />
+    }
+
+    if (isSpecialOnly && isEmpty(monitoredProducts)) {
+      return <NoSpecials />
+    }
+
+    return null;
+  };
+
   return (
     <>
       <Stack>
         {monitoredProducts}
       </Stack>
+      <EmptyMessaging />
       <MonitoredProductDrawer isOpen={isOpen} onClose={onClose} monitoredProduct={currentMonitoredProduct} />
     </>
   )
