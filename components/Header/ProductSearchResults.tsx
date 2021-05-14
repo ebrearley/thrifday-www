@@ -30,11 +30,14 @@ export const ProductSearchResults = ({ products, isOpen, onOutsideClick, onProdu
         left={isLargerThanMobile ? 0 : '1rem' }
         width="100%"
         maxWidth={isLargerThanMobile ? '40rem' : 'calc(100vw - 2rem)' }
-        minWidth="0"
         backgroundColor="gray.700"
         rounded="md"
         ref={ref}
-        paddingInlineStart="0" padding="1" marginBlock="0"
+        paddingInlineStart="0"
+        padding="1"
+        marginBlock="0"
+        overflowY="auto"
+        maxHeight="calc(100vh - 7rem)"
         {...restProps}
       >
           {productSearchResults}

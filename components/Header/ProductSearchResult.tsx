@@ -14,7 +14,7 @@ export const ProductSearchResult = ({ product, onProductSelect, ...restProps }: 
     <Link as="button" role="menuitem" {...restProps} rounded="md" padding="2" textAlign="left" onClick={() => onProductSelect(product)} _hover={{backgroundColor: 'gray.600'}} _focus={{backgroundColor: 'gray.500'}}>
       <Box display="flex">
         <Image width="4rem" height="4rem" marginRight="0.5rem" src={product.imageUrl} objectFit="contain" borderRadius="md" />
-        <Box flexGrow={1} marginRight="1rem">
+        <Box flexGrow={1} marginRight="1rem" minWidth="0">
           <HStack alignItems="start">
             {product.isOnSpecial && <Box flexShrink={0}><Tag colorScheme="yellow">On special</Tag></Box>}
             <Text isTruncated>{product.name}</Text>
