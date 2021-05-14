@@ -23,6 +23,10 @@ export default function Logout() {
         router.push('/login');
       });
     }
+
+    if (!user) {
+      router.push('/login');
+    }
   }, [user, isReadyToLogout]);
 
   return (

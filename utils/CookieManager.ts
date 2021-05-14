@@ -10,7 +10,7 @@ export class CookieManager {
   private cookies: Cookies;
 
   constructor(requestHeaderCookie?: string) {
-    this.isSecure = process.env.NODE_ENV === 'production';
+    this.isSecure = false
     this.domain = process.env.NEXT_PUBLIC_APPLICATION_DOMAIN;
     this.path = '/';
     this.sameSite = 'lax';
