@@ -1,4 +1,5 @@
 import { makeReference } from '@apollo/client';
+import { CookieManager } from '../../utils/CookieManager';
 
 import { useCurrentUser } from '../useCurrentUser';
 
@@ -13,7 +14,8 @@ export const useLogout = (props: UseLogoutProps = { isReady: true }) => {
   const logout = (): Promise<void> => {
     return new Promise((resolve) => {
       const userId = user?.id;
-      sessionStorage.removeItem('jwtToken');
+      const cookieManager = new CookieManager();
+      cookieManager.remove('jwtToken');
 
       if (userId) {
         cache.modify({

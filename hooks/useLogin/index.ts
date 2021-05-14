@@ -8,6 +8,7 @@ import {
   LoginMutationVariables,
   useLoginMutation,
 } from '../../@types/generated';
+import { CookieManager } from '../../utils/CookieManager';
 
 
 type LoginMutationProps = MutationHookOptions<LoginMutation, LoginMutationVariables>;
@@ -30,7 +31,8 @@ export const useLogin = (props: LoginMutationProps = { errorPolicy: 'all' }): Lo
           const user = mutationResult?.data?.login?.user;
 
           if (token) {
-            sessionStorage.setItem('jwtToken', token);
+            const cookieManager = new CookieManager();
+            cookieManager.set('jwtToken', token);
           }
 
           if (user) {

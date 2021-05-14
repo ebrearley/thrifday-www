@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
-import React from 'react';
 import Head from 'next/head';
+import React from 'react';
 
 import { AuthType } from '../components/auth/@enums/AuthType';
 import { AuthForm } from '../components/auth/AuthForm';

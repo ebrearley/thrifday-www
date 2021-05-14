@@ -6,7 +6,7 @@ import { Logo } from '../Logo';
 import { ProductSearchInput } from './ProductSearchInput';
 
 export const Header = (props: HTMLChakraProps<'header'>) => (
-  <>
+  <Box>
     <Box
       pos="fixed"
       as="header"
@@ -31,5 +31,5 @@ export const Header = (props: HTMLChakraProps<'header'>) => (
     </Box>
     <Box height="4rem">
     </Box>
-  </>
+  </Box>
 );

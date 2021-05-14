@@ -1,17 +1,18 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-
+import Head from 'next/head'
 
 import { useCurrentUser } from '../hooks/useCurrentUser'
-import { initializeApollo } from '../lib/apolloClient';
-import { CurrentUserDocument, CurrentUserQueryResult } from '../@types/generated';
-import { GetServerSidePropsContext } from 'next';
-
+import { addApolloState, initializeApollo } from '../lib/apolloClient';
+import { CurrentUserDocument } from '../@types/generated';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 export default function Home() {
   const { user, isLoading } = useCurrentUser();
+
   const router = useRouter();
 
+  
   useEffect(() => {
     if (!user && !isLoading) {
       router.push('/login');
@@ -24,20 +25,40 @@ export default function Home() {
 
   return (
     <>
-      Specials
+      Get started
     </>
   )
 }
 
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//   console.log('cookies', context.req.cookies);
+export async function getServerSideProps(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> {
+  try {
+    const jwtToken = context.req.cookies['jwtToken'];
+    const apolloClient = initializeApollo({ jwtToken });
+    const user = await apolloClient.query({
+      query: CurrentUserDocument,
+    });
 
-//   const apolloClient = initializeApollo();
+    if (!user) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/login',
+        }
+      };
+    }
 
-//   const result = await apolloClient.query<CurrentUserQueryResult>({
-//     query: CurrentUserDocument,
-//   });
-
-//   // console.log(result?.data?.data);
-
-// }
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/specials',
+      }
+    };
+  } catch (error) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/login',
+      }
+    };
+  }
+}

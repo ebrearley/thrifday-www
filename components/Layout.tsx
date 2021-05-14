@@ -32,14 +32,14 @@ export const Layout = ({ children }: LayoutProps) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Header />
-        <Flex minHeight="calc(100% - 4rem)">
-          <Sidebar />
-          <Box flexGrow={1} backgroundColor="gray.900">
-            <Box as="main" height="100%" padding="1rem">
-              {children}
-            </Box>
+      <Flex minHeight="calc(100% - 4rem)">
+        <Sidebar />
+        <Box flexGrow={1} backgroundColor="gray.900">
+          <Box as="main" height="100%" padding="1rem">
+            {children}
           </Box>
-        </Flex>
+        </Box>
+      </Flex>
     </>
   )
 };
