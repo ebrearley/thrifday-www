@@ -1,4 +1,5 @@
-import { Box, Heading, HTMLChakraProps, Text } from '@chakra-ui/react';
+import { Box, Button, Heading, HTMLChakraProps, Text } from '@chakra-ui/react';
+import Link from 'next/link';
 import React from 'react';
 import { TextLink } from './TextLink';
 
@@ -11,5 +12,11 @@ export const NoSpecials = (props: HTMLChakraProps<'aside'>) => (
     <Text opacity="0.7" fontSize="lg" mt="6">
       Try adding more products or more retailers to each <TextLink href="/products">product</TextLink>.
     </Text>
+
+    <Box marginTop="2rem">
+      <Link href="/products">
+        <Button>View products</Button>
+      </Link>
+    </Box>
   </Box>
 )
