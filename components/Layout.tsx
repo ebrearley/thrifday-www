@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, useMediaQuery } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import React from 'react';
@@ -12,6 +12,7 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
   const router = useRouter();
+  const [ isLargerThanMobile ] = useMediaQuery("(min-width: 481px)");
 
   if (router.route === '/login' || router.route === '/signup') {
     return (
@@ -33,7 +34,7 @@ export const Layout = ({ children }: LayoutProps) => {
       </Head>
       <Header />
       <Flex minHeight="calc(100% - 4rem)">
-        <Sidebar />
+        {isLargerThanMobile && <Sidebar />}
         <Box flexGrow={1} backgroundColor="gray.900">
           <Box as="main" height="100%" padding="1rem">
             {children}
