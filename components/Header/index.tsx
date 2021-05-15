@@ -28,11 +28,11 @@ export const Header = (props: HTMLChakraProps<'header'>) => {
         {...props}
       >
         <HStack marginBottom="0" flexGrow={1}>
+          {!isLargerThanMobile && <Hamburger />}
           <Logo isWordmarkTextHidden={!isLargerThanMobile} />
           <InputGroup>
             <ProductSearchInput />
           </InputGroup>
-          {!isLargerThanMobile && <Hamburger />}
         </HStack>
       </Box>
       <Box height="4rem">
