@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import Head from 'next/head';
 import React from 'react';
 
 import { AuthType } from '../components/auth/@enums/AuthType';
@@ -23,6 +24,9 @@ export default function Login() {
 
   return (
     <>
+      <Head>
+        <title>Thrifday | Login</title>
+      </Head>
       <WelcomeMessage marginTop="16" />
       <AuthForm authType={AuthType.Login} />
     </>

@@ -3,7 +3,7 @@ import React from 'react';
 
 
 export const WelcomeMessage = (props: HTMLChakraProps<'aside'>) => (
-  <Box as="aside" maxWidth="xl" mx="auto" textAlign="center" {...props}>
+  <Box as="aside" maxWidth="xl" paddingX="1rem" mx="auto" textAlign="center" {...props}>
     <Heading as="h1" size="xl" fontWeight="black">
       Stay up to date with the cheapest prices.
     </Heading>

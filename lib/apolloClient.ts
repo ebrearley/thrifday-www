@@ -6,35 +6,39 @@ import isEqual from 'lodash/isEqual';
 import DebounceLink from 'apollo-link-debounce';
 
 import graphQlFragments from '../graphql/fragments.json';
+import { CookieManager } from '../utils/CookieManager';
 
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__'
 
-let apolloClient
+let apolloClient: ApolloClient<NormalizedCacheObject>
 
 const debounceLink = new DebounceLink(100);
 
 const httpLink = new HttpLink({
   uri: `${process.env.NEXT_PUBLIC_API_ENDPOINT_TRANSPORT}://${process.env.NEXT_PUBLIC_API_ENDPOINT}:${process.env.NEXT_PUBLIC_API_ENDPOINT_PORT}/graphql`, // Server URL (must be absolute)
-  credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
+  credentials: 'same-origin',
 });
 
-const authLink = setContext((_, { headers }) => {
-  let token = undefined;
+const getAuthLink = (jwtToken?: string) => setContext((gqlRequest, { headers }) => {
+  let token = jwtToken;
 
-  if (typeof window !== 'undefined') {
-    token = sessionStorage.getItem('jwtToken');
+  if (typeof window !== 'undefined' && !jwtToken) {
+    const cookieManager = new CookieManager();
+    token = cookieManager.get('jwtToken');
   }
 
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : '',
+      authorization: token ? `Bearer ${token}` : undefined,
     }
   }
 });
 
-function createApolloClient() {
+function createApolloClient(jwtToken?: string) {
+  const authLink = getAuthLink(jwtToken);
+
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: debounceLink.concat(authLink.concat(httpLink)),
@@ -55,17 +59,30 @@ function createApolloClient() {
   })
 }
 
-export function initializeApollo(initialState = null): ApolloClient<NormalizedCacheObject> {
-  const _apolloClient = apolloClient ?? createApolloClient()
+interface InitializeApolloProps {
+  initialState?: any;
+  jwtToken?: string;
+}
+
+export function initializeApollo(props: InitializeApolloProps = {}): ApolloClient<NormalizedCacheObject> {
+  const initialState = props?.initialState;
+  const jwtToken = props?.jwtToken;
+
+  const _apolloClient = apolloClient ?? createApolloClient(jwtToken);
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // gets hydrated here
   if (initialState) {
     // Get existing cache, loaded during client side data fetching
-    const existingCache = _apolloClient.extract()
+    const existingCache = _apolloClient.extract();
+
+    let flattenedInitialState = initialState; 
+    if (initialState['__APOLLO_STATE__']) {
+      flattenedInitialState = initialState['__APOLLO_STATE__'];
+    }
 
     // Merge the existing cache into data passed from getStaticProps/getServerSideProps
-    const data = merge(initialState, existingCache, {
+    const data = merge(flattenedInitialState, existingCache, {
       // combine arrays using object equality (like in sets)
       arrayMerge: (destinationArray, sourceArray) => [
         ...sourceArray,
@@ -75,6 +92,7 @@ export function initializeApollo(initialState = null): ApolloClient<NormalizedCa
       ],
     })
 
+    
     // Restore the cache with the merged data
     _apolloClient.cache.restore(data)
   }
@@ -92,10 +110,4 @@ export function addApolloState(client, pageProps) {
   }
 
   return pageProps
-}
-
-export function useApollo(pageProps) {
-  const state = pageProps[APOLLO_STATE_PROP_NAME]
-  const store = useMemo(() => initializeApollo(state), [state])
-  return store
 }

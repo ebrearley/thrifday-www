@@ -1,6 +1,8 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, useMediaQuery } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import React from 'react';
+
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 
@@ -10,22 +12,35 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
   const router = useRouter();
+  const [ isLargerThanMobile ] = useMediaQuery("(min-width: 481px)");
 
   if (router.route === '/login' || router.route === '/signup') {
-    return children;
+    return (
+      <>
+      <Head>
+        <title>Thrifday</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
+      {children}
+    </>
+    );
   }
 
   return (
     <>
+      <Head>
+        <title>Thrifday</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <Header />
-        <Flex minHeight="calc(100% - 4rem)">
-          <Sidebar />
-          <Box flexGrow={1} backgroundColor="gray.900">
-            <Box as="main" height="100%" padding="1rem">
-              {children}
-            </Box>
+      <Flex minHeight="calc(100% - 4rem)">
+        {isLargerThanMobile && <Sidebar />}
+        <Box flexGrow={1} backgroundColor="gray.900">
+          <Box as="main" height="100%" padding="1rem">
+            {children}
           </Box>
-        </Flex>
+        </Box>
+      </Flex>
     </>
   )
 };

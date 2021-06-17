@@ -22,7 +22,7 @@ export const MonitoredProduct = ({ monitoredProduct, onMonitoredProductClick, ..
   return (
     <Box as="article" display="flex" rounded="md" padding="2" backgroundColor="gray.700" transition="0.2s background-color ease" {...restProps}>
       <Image width="4.5rem" height="4.5rem" marginRight="1rem" src={mainRetailerProduct.imageUrl} objectFit="contain" borderRadius="md" />
-      <Box flexGrow={1} marginRight="1rem">
+      <Box flexGrow={1} marginRight="1rem" minWidth="0">
         <Heading size="sm" marginBottom="1"><Link onClick={handleMonitoredProductClick}>
           <HStack alignItems="start">
             {mainRetailerProduct.isOnSpecial && <Box flexShrink={0}><Tag textDecoration="none" colorScheme="yellow">On special</Tag></Box>}

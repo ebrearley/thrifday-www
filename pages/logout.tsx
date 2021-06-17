@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLogout } from '../hooks/useLogout';
@@ -22,10 +23,19 @@ export default function Logout() {
         router.push('/login');
       });
     }
+
+    if (!user) {
+      router.push('/login');
+    }
   }, [user, isReadyToLogout]);
 
   return (
-    <LoadingBlock>Logging out</LoadingBlock>
+    <>
+      <Head>
+        <title>Thrifday | Logging out</title>
+      </Head>
+      <LoadingBlock>Logging out</LoadingBlock>
+    </>
   );
 }
 

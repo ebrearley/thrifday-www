@@ -8,6 +8,7 @@ import {
   useRegisterMutation,
 } from '../../@types/generated';
 import { addUserToApolloCache } from '../../utils/addUserToApolloCache';
+import { CookieManager } from '../../utils/CookieManager';
 
 
 type LoginMutationProps = MutationHookOptions<RegisterMutation, RegisterMutationVariables>;
@@ -30,7 +31,8 @@ export const useRegister = (props: LoginMutationProps = { errorPolicy: 'all' }):
           const user = mutationResult?.data?.register?.user;
 
           if (token) {
-            sessionStorage.setItem('jwtToken', token);
+            const cookieManager = new CookieManager();
+            cookieManager.set('jwtToken', token);
           }
 
           if (user) {

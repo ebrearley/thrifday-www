@@ -1,35 +1,42 @@
-import { Box, Button, Stack } from '@chakra-ui/react';
+import { Flex, Button, HTMLChakraProps, Stack } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
 
-export const Sidebar = () => {
+export const Sidebar = (props: HTMLChakraProps<'header'>) => {
   const router = useRouter();
   const { route } = router;
 
+  const getButtonProps = (href) => ({
+    variant: route === href
+      ? 'solid'
+      : 'outline',
+    colorScheme: route === href
+      ? 'teal'
+      : undefined,
+  });
+
 
   return (
-    <Box borderRightWidth="1px" flexShrink={1} width="15rem">
-      <Box position="fixed" padding="1rem" width="15rem" display="flex" flexDirection="column" justifyContent="space-between" height="calc(100% - 4rem)">
-        <Stack as="nav">
-          <Link href="/specials">
-            <Button variant={route === '/specials' ? 'solid' : 'outline'} colorScheme={route === '/specials' ? 'teal' : undefined}>
-              Specials
-            </Button>
-          </Link>
-          <Link href="/products">
-            <Button  variant={route === '/products' ? 'solid' : 'outline'} colorScheme={route === '/products' ? 'teal' : undefined}>
-              Products
-            </Button>
-          </Link>
-        </Stack>
-        <Link href="/logout">
-          <Button colorScheme="teal" variant="ghost">
-            Log out
+    <Flex borderRightWidth="1px" flexShrink={1} width="15rem" padding="1rem" paddingTop="2rem" flexDirection="column" justifyContent="space-between" align-self="stretch" {...props}>
+      <Stack as="nav">
+        <Link href="/specials">
+          <Button {...getButtonProps('/specials')}>
+            Specials
           </Button>
         </Link>
-      </Box>
-    </Box>
+        <Link href="/products">
+          <Button {...getButtonProps('/products')}>
+            Products
+          </Button>
+        </Link>
+      </Stack>
+      <Link href="/logout">
+        <Button colorScheme="teal" variant="ghost">
+          Log out
+        </Button>
+      </Link>
+    </Flex>
   );
 };

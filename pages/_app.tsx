@@ -5,18 +5,20 @@ import React from 'react';
 
 import '../styles/globals.css';
 import { Layout } from '../components/Layout';
-import { useApollo } from '../lib/apolloClient'
+import { useApollo } from '../hooks/useApollo';
+import { PageRouteProgress } from '../components/PageRouteProgress';
 
 
 export default function App({ Component, pageProps }: AppProps) {
-  const apolloClient = useApollo(pageProps)
+  const apolloClient = useApollo(pageProps);
 
   return (
     <ApolloProvider client={apolloClient}>
       <ChakraProvider resetCSS={true}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+        <PageRouteProgress />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </ChakraProvider>
     </ApolloProvider>
   )
